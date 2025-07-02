@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debangsha Sarkar - AI & Machine Learning Portfolio</title>
+    <meta name="description" content="CTO @EclimAi | 2x Masters @UBC | Machine Learning Researcher specializing in Computer Vision, NeRF, and Generative AI">
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loading-screen">
+        <div class="loader">
+            <div class="loader-text">Loading Experience</div>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <span class="brand-text">Debangsha Sarkar</span>
+        </div>
+        <div class="nav-menu" id="nav-menu">
+            <a href="#home" class="nav-link">Home</a>
+            <a href="#drone-showcase" class="nav-link">Showcase</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#experience" class="nav-link">Experience</a>
+            <a href="#projects" class="nav-link">Projects</a>
+            <a href="#contact" class="nav-link">Contact</a>
+        </div>
+        <div class="nav-toggle" id="nav-toggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+
+    <!-- Three.js Canvas -->
+    <canvas id="three-canvas"></canvas>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Hero Section -->
+        <section id="home" class="hero">
+            <div class="hero-container">
+                <div class="hero-content-wrapper">
+                    <div class="hero-text-content">
+                        <div class="hero-label">
+                            <span class="label-text">Start Experience</span>
+                        </div>
+                        <h1 class="hero-title">
+                            <span class="title-line">Debangsha</span>
+                            <span class="title-line">Sarkar</span>
+                        </h1>
+                        <div class="hero-badges">
+                            <span class="badge">CTO</span>
+                            <span class="badge">AI Researcher</span>
+                            <span class="badge">ML Engineer</span>
+                            <span class="badge">Vibe Coder</span>
+                        </div>
+                        <p class="hero-description">
+                            CTO @EclimAi | 2x Masters @UBC in Computer Science | Machine Learning researcher passionate about 
+                            applying AI to solve real-world problems. Specializing in Computer Vision, NeRF, Generative AI, 
+                            and helping small businesses incorporate cutting-edge technology into their systems.
+                        </p>
+                        <div class="hero-actions">
+                            <button class="btn btn-primary" id="start-experience">Start Experience</button>
+                            <button class="btn btn-secondary" onclick="document.getElementById('about').scrollIntoView({behavior: 'smooth'})">Learn More</button>
+                        </div>
+                    </div>
+                    <div class="hero-profile-container">
+                    <div class="pokemon-cards-carousel">
+                        <div class="cards-container" id="cards-container">
+                            <!-- Card 1: AI & Machine Learning -->
+                            <div class="pokemon-card active" data-card="0">
+                                <div class="card-header">
+                                    <div class="card-name">Debangsha</div>
+                                    <div class="card-hp">AI/ML <span class="hp-value">Expert</span></div>
+                                </div>
+                                <div class="card-image-frame">
+                                    <img src="images/profile_picture1.jpg" alt="AI & Machine Learning Expert" class="profile-image">
+                                </div>
+                                <div class="card-content">
+                                    <div class="ability-section">
+                                        <div class="ability-label">Expertise</div>
+                                        <div class="ability-name">Neural Networks</div>
+                                        <div class="ability-description">Deploy PyTorch & TensorFlow models with 93% accuracy</div>
+                                    </div>
+                                    <div class="attack-section">
+                                        <div class="attack">
+                                            <div class="attack-cost">
+                                                <span class="energy-symbol">🧠</span>
+                                                <span class="energy-symbol">⚡</span>
+                                            </div>
+                                            <div class="attack-details">
+                                                <div class="attack-name">Deep Learning</div>
+                                                <div class="attack-damage">100+</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-stats">CTO • Researcher • Engineer</div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: NeRF & 3D Graphics -->
+                            <div class="pokemon-card" data-card="1">
+                                <div class="card-header">
+                                    <div class="card-name">Debangsha</div>
+                                    <div class="card-hp">NeRF <span class="hp-value">Master</span></div>
+                                </div>
+                                <div class="card-image-frame">
+                                    <img src="images/profile_picture3.jpg" alt="NeRF & 3D Graphics Specialist" class="profile-image">
+                                </div>
+                                <div class="card-content">
+                                    <div class="ability-section">
+                                        <div class="ability-label">Expertise</div>
+                                        <div class="ability-name">3D Reconstruction</div>
+                                        <div class="ability-description">Transform 2D footage into immersive 3D worlds</div>
+                                    </div>
+                                    <div class="attack-section">
+                                        <div class="attack">
+                                            <div class="attack-cost">
+                                                <span class="energy-symbol">🎥</span>
+                                                <span class="energy-symbol">🌐</span>
+                                            </div>
+                                            <div class="attack-details">
+                                                <div class="attack-name">Neural Radiance</div>
+                                                <div class="attack-damage">150</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-stats">Unreal Engine 5 • Virtual Production</div>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Computer Vision -->
+                            <div class="pokemon-card" data-card="2">
+                                <div class="card-header">
+                                    <div class="card-name">Debangsha</div>
+                                    <div class="card-hp">Vision <span class="hp-value">Pro</span></div>
+                                </div>
+                                <div class="card-image-frame">
+                                    <img src="images/profile_picture4.jpg" alt="Computer Vision Expert" class="profile-image">
+                                </div>
+                                <div class="card-content">
+                                    <div class="ability-section">
+                                        <div class="ability-label">Expertise</div>
+                                        <div class="ability-name">Visual AI</div>
+                                        <div class="ability-description">Real-time video processing & object detection</div>
+                                    </div>
+                                    <div class="attack-section">
+                                        <div class="attack">
+                                            <div class="attack-cost">
+                                                <span class="energy-symbol">👁️</span>
+                                                <span class="energy-symbol">🔍</span>
+                                            </div>
+                                            <div class="attack-details">
+                                                <div class="attack-name">Deep Vision</div>
+                                                <div class="attack-damage">120</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-stats">DeepFake • Mask-RCNN • Segmentation</div>
+                                </div>
+                            </div>
+
+                            <!-- Card 4: Drone & Tech -->
+                            <div class="pokemon-card" data-card="3">
+                                <div class="card-header">
+                                    <div class="card-name">Debangsha</div>
+                                    <div class="card-hp">Tech <span class="hp-value">Lead</span></div>
+                                </div>
+                                <div class="card-image-frame">
+                                    <img src="images/profile_picture5.jpg" alt="Drone & Technology Expert" class="profile-image">
+                                </div>
+                                <div class="card-content">
+                                    <div class="ability-section">
+                                        <div class="ability-label">Expertise</div>
+                                        <div class="ability-name">Aerial Mapping</div>
+                                        <div class="ability-description">City-scale 3D reconstruction from drone footage</div>
+                                    </div>
+                                    <div class="attack-section">
+                                        <div class="attack">
+                                            <div class="attack-cost">
+                                                <span class="energy-symbol">🛩️</span>
+                                                <span class="energy-symbol">📊</span>
+                                            </div>
+                                            <div class="attack-details">
+                                                <div class="attack-name">Point Cloud</div>
+                                                <div class="attack-damage">200</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-stats">Photogrammetry • PLY • Kubernetes</div>
+                                </div>
+                            </div>
+
+                            <!-- Card 5: Formula 1 Passion -->
+                            <div class="pokemon-card" data-card="4">
+                                <div class="card-header">
+                                    <div class="card-name">Debangsha</div>
+                                    <div class="card-hp">F1 <span class="hp-value">Fan</span></div>
+                                </div>
+                                <div class="card-image-frame">
+                                    <img src="images/profile_picture6.JPG" alt="Formula 1 Enthusiast" class="profile-image">
+                                </div>
+                                <div class="card-content">
+                                    <div class="ability-section">
+                                        <div class="ability-label">Passion</div>
+                                        <div class="ability-name">Speed & Precision</div>
+                                        <div class="ability-description">Racing strategy meets engineering excellence</div>
+                                    </div>
+                                    <div class="attack-section">
+                                        <div class="attack">
+                                            <div class="attack-cost">
+                                                <span class="energy-symbol">🏎️</span>
+                                                <span class="energy-symbol">🏁</span>
+                                            </div>
+                                            <div class="attack-details">
+                                                <div class="attack-name">Pole Position</div>
+                                                <div class="attack-damage">300</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="card-stats">McLaren • Analytics • Performance</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Navigation Controls -->
+                        <div class="card-navigation">
+                            <button class="nav-btn prev-btn" id="prev-btn">‹</button>
+                            <div class="card-indicators">
+                                <span class="indicator active" data-card="0"></span>
+                                <span class="indicator" data-card="1"></span>
+                                <span class="indicator" data-card="2"></span>
+                                <span class="indicator" data-card="3"></span>
+                                <span class="indicator" data-card="4"></span>
+                            </div>
+                            <button class="nav-btn next-btn" id="next-btn">›</button>
+                        </div>
+                        
+                        <!-- Card Info -->
+                        <div class="card-info">
+                            <div class="card-tech-tag">Holographic Portfolio</div>
+                            <div class="card-description">Swipe to explore different expertise areas</div>
+                        </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drone Scanning Video Showcase -->
+        <section id="drone-showcase" class="drone-video-showcase">
+            <div class="video-showcase-container">
+                <div class="video-background">
+                    <div class="video-card">
+                        <video autoplay muted loop playsinline class="showcase-video">
+                            <source src="videos/drone-scanning-demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="video-overlay-content">
+                    <div class="showcase-label">
+                        <span class="label-text">Featured Project</span>
+                    </div>
+                    <h2 class="showcase-title">
+                        <span class="title-line">Drone City</span>
+                        <span class="title-line">Scanning</span>
+                    </h2>
+                    <div class="showcase-badges">
+                        <span class="showcase-badge">3D Reconstruction</span>
+                        <span class="showcase-badge">AI-Powered</span>
+                        <span class="showcase-badge">Real-time</span>
+                    </div>
+                    <p class="showcase-description">
+                        Transforming aerial footage into detailed 3D models using advanced photogrammetry 
+                        and neural reconstruction techniques. Watch as raw drone data becomes immersive digital twins.
+                    </p>
+                    <div class="showcase-actions">
+                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
+                            Explore Projects
+                        </button>
+                        <button class="btn btn-secondary video-control-btn" id="video-toggle">
+                            <span class="control-text">Pause</span>
+                            <span class="control-icon">⏸</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="video-progress">
+                    <div class="progress-line" id="video-progress-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">About Me</h2>
+                    <p class="section-subtitle">Transforming ideas into intelligent solutions</p>
+                </div>
+                <div class="about-content">
+                    <div class="about-text">
+                        <p class="about-paragraph">
+                            I am a data scientist and Machine Learning researcher with a proven track record of applying 
+                            cutting-edge AI to solve real-world challenges. With dual Master's degrees from UBC in Computer Science 
+                            and Data Science, I bring both theoretical depth and practical expertise to every project.
+                        </p>
+                        <p class="about-paragraph">
+                            As CTO of EclimAi, I lead the development of intelligent clean tech solutions for smart building systems, 
+                            leveraging computer vision and machine learning. My research in active learning has resulted in published 
+                            work that accelerates ML model training with minimal data, challenging traditional data-hungry approaches.
+                        </p>
+                        <p class="about-paragraph">
+                            From developing Neural Radiance Fields (NeRF) for virtual production to creating fraud detection pipelines 
+                            for fintech startups, I thrive on pushing the boundaries of what's possible with AI. I also run an AI podcast 
+                            and am passionate about making complex AI concepts accessible to everyone.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section class="skills">
+            <div class="container">
+                <div class="skills-grid">
+                    <div class="skill-card" data-scroll="true">
+                        <div class="skill-icon">🤖</div>
+                        <h3 class="skill-title">Machine Learning & AI</h3>
+                        <p class="skill-description">PyTorch, TensorFlow, Keras, Active Learning, Neural Networks, Computer Vision</p>
+                    </div>
+                    <div class="skill-card" data-scroll="true">
+                        <div class="skill-icon">🎥</div>
+                        <h3 class="skill-title">NeRF & 3D Graphics</h3>
+                        <p class="skill-description">Neural Radiance Fields, 3D Gaussian Splatting, Unreal Engine 5, Virtual Production</p>
+                    </div>
+                    <div class="skill-card" data-scroll="true">
+                        <div class="skill-icon">🛩️</div>
+                        <h3 class="skill-title">Drone & 3D Scanning</h3>
+                        <p class="skill-description">City scanning, photogrammetry, point cloud processing, PLY file generation</p>
+                    </div>
+                    <div class="skill-card" data-scroll="true">
+                        <div class="skill-icon">💻</div>
+                        <h3 class="skill-title">Programming & DevOps</h3>
+                        <p class="skill-description">Python, R, C++, Apache Spark, Kubernetes, AWS, Real-time ML pipelines</p>
+                    </div>
+                    <div class="skill-card" data-scroll="true">
+                        <div class="skill-icon">👁️</div>
+                        <h3 class="skill-title">Computer Vision</h3>
+                        <p class="skill-description">DeepFake, Mask-RCNN, Image Segmentation, Real-time Video Processing</p>
+                    </div>
+                    <div class="skill-card" data-scroll="true">
+                        <div class="skill-icon">🎙️</div>
+                        <h3 class="skill-title">AI Communication</h3>
+                        <p class="skill-description">AI Podcast host, Technical writing, Research publications, Public speaking</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section id="experience" class="experience">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Experience</h2>
+                    <p class="section-subtitle">Building the future with AI, one project at a time</p>
+                </div>
+                <div class="experience-timeline">
+                    <div class="timeline-item" data-scroll="true">
+                        <div class="timeline-date">Apr 2024 - Present</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Chief Technology Officer</h3>
+                            <p class="timeline-company">EclimAi Ltd, Dublin, Ireland</p>
+                            <p class="timeline-description">
+                                Leading development of cutting-edge clean tech for smart building systems using computer vision and ML. 
+                                Managing product development, research collaboration with CV researchers, and acting as bridge between 
+                                stakeholders, board members, and development teams.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll="true">
+                        <div class="timeline-date">Jan 2015 - Jul 2024</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Freelance Machine Learning Engineer</h3>
+                            <p class="timeline-company">Various Clients</p>
+                            <p class="timeline-description">
+                                Developed ML pipelines increasing client sales by 15%, achieved 93% accuracy in product classification, 
+                                reduced fraudulent transactions by 20% for neo-banking startup, and created real-time sentiment analysis 
+                                systems using Apache Spark, TensorFlow, and AWS.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll="true">
+                        <div class="timeline-date">Mar 2023 - Jul 2023</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Machine Learning Engineer</h3>
+                            <p class="timeline-company">Versatile Media Ltd, Vancouver, BC</p>
+                            <p class="timeline-description">
+                                Conducted NeRF and photogrammetry experiments for Unreal Engine 5, trained DeepFake models, 
+                                implemented Audio2Face in NVIDIA Omniverse, and collaborated with Volinga.ai on NeRF plugins 
+                                for virtual production workflows.
+                            </p>
+                            <div class="timeline-3d-model">
+                                <div id="timeline-3d-model" class="timeline-headscan-model">
+                                    <div class="model-loading">
+                                        <div class="loading-spinner"></div>
+                                        <div class="loading-text">Loading 3D Headscan...</div>
+                                    </div>
+                                </div>
+                                <div class="model-info">
+                                    <div class="model-tech-tag">3D Headscan</div>
+                                    <div class="model-description">Real-time 3D reconstruction</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll="true">
+                        <div class="timeline-date">Jul 2019 - Aug 2022</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">AI Research Developer</h3>
+                            <p class="timeline-company">Tveon, British Columbia, Canada</p>
+                            <p class="timeline-description">
+                                Developed computer vision algorithms from scratch, deployed models in Kubernetes using Kubeflow, 
+                                and contributed to novel AI-driven video encoding system utilizing Mask-RCNN segmentation masks.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="timeline-item" data-scroll="true">
+                        <div class="timeline-date">Sep 2019 - Dec 2022</div>
+                        <div class="timeline-content">
+                            <h3 class="timeline-title">Graduate Research Assistant & TA</h3>
+                            <p class="timeline-company">University of British Columbia</p>
+                            <p class="timeline-description">
+                                Developed novel active learning algorithm for accelerating ML model training with minimal data. 
+                                Published research in MATHMOD 2022 and Computers in Industry Journal. Taught and mentored 
+                                students in computer science and data science programs.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="projects">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Featured Projects</h2>
+                    <p class="section-subtitle">Showcasing cutting-edge AI and 3D reconstruction work through visuals</p>
+                </div>
+                <div class="projects-grid">
+                    
+                    <!-- Drone City Scanning Project -->
+                    <div class="project-card" data-scroll="true">
+                        <div class="project-content">
+                            <h3 class="project-title">Drone City Scanning & 3D Gaussian Splatting</h3>
+                            <p class="project-description">
+                                Advanced drone-based city scanning converting aerial footage into high-fidelity 3D Gaussian splat models. 
+                                Utilizing photogrammetry and neural reconstruction techniques to create detailed urban digital twins.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Drone Technology</span>
+                                <span class="tech-tag">3D Gaussian Splatting</span>
+                                <span class="tech-tag">Photogrammetry</span>
+                                <span class="tech-tag">Point Clouds</span>
+                            </div>
+                        </div>
+                        <div class="media-gallery">
+                            <!-- Add your drone scanning images here -->
+                            <div class="media-item">
+                                <img src="images/drone-scanning-1.jpg" alt="Drone scanning urban area" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Urban Drone Survey</div>
+                                    <div class="media-description">High-altitude capture of city district</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <img src="images/drone-scanning-2.jpg" alt="3D point cloud visualization" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Point Cloud Generation</div>
+                                    <div class="media-description">Dense 3D reconstruction from aerial imagery</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <div class="video-container">
+                                    <video controls onerror="this.parentElement.parentElement.style.display='none'">
+                                        <source src="videos/drone-scanning-demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="video-overlay">
+                                        <div class="play-button">▶</div>
+                                    </div>
+                                </div>
+                                <div class="media-caption">
+                                    <div class="media-title">Scanning Process Demo</div>
+                                    <div class="media-description">End-to-end workflow demonstration</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NeRF Virtual Production Project -->
+                    <div class="project-card" data-scroll="true">
+                        <div class="project-content">
+                            <h3 class="project-title">Neural Radiance Fields for Virtual Production</h3>
+                            <p class="project-description">
+                                Research and implementation of NeRF technology in Unreal Engine 5 for commercial virtual production. 
+                                Collaborated with industry leaders to integrate AI-generated 3D scenes into film and commercial workflows.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">NeRF</span>
+                                <span class="tech-tag">Unreal Engine 5</span>
+                                <span class="tech-tag">Computer Vision</span>
+                                <span class="tech-tag">Virtual Production</span>
+                            </div>
+                        </div>
+                        <div class="media-gallery">
+                            <!-- Add your NeRF/virtual production images here -->
+                            <div class="media-item">
+                                <img src="images/profile_picture3.jpg" alt="NeRF scene reconstruction" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">NeRF Scene Reconstruction</div>
+                                    <div class="media-description">High-fidelity scene capture and reconstruction</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <img src="images/profile_picture4.jpg" alt="Virtual production setup" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Virtual Production Setup</div>
+                                    <div class="media-description">NeRF integration in Unreal Engine 5</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <div class="video-container">
+                                    <video controls poster="images/podcast-video-poster.jpg" onerror="this.parentElement.parentElement.style.display='none'">
+                                        <source src="videos/nerf-demo.mp4" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <div class="video-overlay">
+                                        <div class="play-button">▶</div>
+                                    </div>
+                                </div>
+                                <div class="media-caption">
+                                    <div class="media-title">NeRF Demo Video</div>
+                                    <div class="media-description">Live demonstration of NeRF reconstruction</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Active Learning Research Project -->
+                    <div class="project-card" data-scroll="true">
+                        <div class="project-content">
+                            <h3 class="project-title">Active Learning for Machine Learning Acceleration</h3>
+                            <p class="project-description">
+                                Published research on novel active learning algorithms that accelerate ML model training with minimal data. 
+                                Work presented at MATHMOD 2022 and published in Computers in Industry Journal.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Active Learning</span>
+                                <span class="tech-tag">Machine Learning</span>
+                                <span class="tech-tag">Research</span>
+                                <span class="tech-tag">Publications</span>
+                            </div>
+                        </div>
+                        <div class="media-gallery">
+                            <!-- Add your research images here -->
+                            <div class="media-item">
+                                <img src="images/drone-scanning-1.jpg" alt="Active learning algorithm visualization" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Algorithm Performance</div>
+                                    <div class="media-description">Active learning efficiency metrics</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <img src="images/speaking-1.jpg" alt="Research presentation" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Conference Presentation</div>
+                                    <div class="media-description">MATHMOD 2022 research presentation</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <img src="images/drone-scanning-2.jpg" alt="Data visualization" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Research Results</div>
+                                    <div class="media-description">Data analysis and visualization</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Podcast & Communication Project -->
+                    <div class="project-card" data-scroll="true">
+                        <div class="project-content">
+                            <h3 class="project-title">AI Podcast & Technical Communication</h3>
+                            <p class="project-description">
+                                Host and producer of AI-focused podcast available on YouTube, Spotify, and Apple Podcasts. 
+                                Making complex AI concepts accessible to broader audiences through engaging content.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Podcast</span>
+                                <span class="tech-tag">AI Education</span>
+                                <span class="tech-tag">Public Speaking</span>
+                                <span class="tech-tag">Content Creation</span>
+                            </div>
+                        </div>
+                        <div class="media-gallery">
+                            <!-- Add your podcast images here -->
+                            <div class="media-item">
+                                <img src="images/profile_picture5.jpg" alt="Podcast recording setup" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Podcast Studio</div>
+                                    <div class="media-description">Professional recording environment</div>
+                                </div>
+                            </div>
+                            <div class="media-item">
+                                <img src="images/profile_picture6.JPG" alt="Speaking engagement" onerror="this.style.display='none'">
+                                <div class="media-caption">
+                                    <div class="media-title">Public Speaking</div>
+                                    <div class="media-description">AI conference presentation</div>
+                                </div>
+                            </div>
+                                                         <div class="media-item">
+                                 <div class="video-container">
+                                     <video controls poster="images/podcast-video-poster.jpg" onerror="this.parentElement.parentElement.style.display='none'">
+                                         <source src="videos/podcast-highlights.mp4" type="video/mp4">
+                                         Your browser does not support the video tag.
+                                     </video>
+                                     <div class="video-overlay">
+                                         <div class="play-button">▶</div>
+                                     </div>
+                                 </div>
+                                 <div class="media-caption">
+                                     <div class="media-title">Podcast Highlights</div>
+                                     <div class="media-description">Best moments from recent episodes</div>
+                                 </div>
+                             </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Quote Section -->
+        <section class="quote-section">
+            <div class="container">
+                <div class="quote-content">
+                    <h2 class="quote-title">2 Questions<br>2 Answers</h2>
+                    <div class="quotes">
+                        <div class="quote-item" data-scroll="true">
+                            <p class="quote-text">"I chose the language of code and AI because they are universal tools for solving humanity's greatest challenges"</p>
+                        </div>
+                        <div class="quote-item" data-scroll="true">
+                            <p class="quote-text">"Every challenge is an opportunity to innovate and push the boundaries of what's possible with machine learning"</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">Let's Create Together</h2>
+                    <p class="section-subtitle">Ready to bring AI innovation to your business</p>
+                </div>
+                <div class="contact-content">
+                    <div class="contact-form-wrapper">
+                        <form class="contact-form" id="contact-form">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" placeholder="Your Name" required>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" placeholder="Your Email" required>
+                            </div>
+                            <div class="form-group">
+                                <textarea id="message" name="message" placeholder="Tell me about your AI project or collaboration idea" rows="5" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Send Message</button>
+                        </form>
+                    </div>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <h3>Location</h3>
+                            <p>Burnaby, British Columbia, Canada</p>
+                        </div>
+                        <div class="contact-item">
+                            <h3>Professional</h3>
+                            <a href="https://www.linkedin.com/in/debangsha-sarkar/" target="_blank">LinkedIn Profile</a>
+                        </div>
+                        <div class="contact-item">
+                            <h3>AI Podcast</h3>
+                            <div class="social-links">
+                                <a href="https://lnkd.in/gYsGUaeN" class="social-link" target="_blank">YouTube</a>
+                                <a href="https://lnkd.in/epCzstX9" class="social-link" target="_blank">Spotify</a>
+                                <a href="https://lnkd.in/eW8bEYaz" class="social-link" target="_blank">Apple Podcast</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <h3>Research</h3>
+                            <div class="social-links">
+                                <a href="https://doi.org/10.1016/j.ifacol.2022.09.071" class="social-link" target="_blank">MATHMOD 2022</a>
+                                <a href="https://authors.elsevier.com/a/1hS07bquFUvWm" class="social-link" target="_blank">Elsevier</a>
+                                <a href="http://hdl.handle.net/2429/80545" class="social-link" target="_blank">Thesis</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2024 Debangsha Sarkar. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Privacy Policy</a>
+                    <a href="#" class="footer-link">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html> 
