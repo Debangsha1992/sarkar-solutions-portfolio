@@ -1988,63 +1988,66 @@ body.keyboard-navigation *:focus {
     z-index: 1;
 }
 
-/* Card Spiral Motion Animation */
+/* Card Spiral Motion Animation with 360° Spin */
 @keyframes cardSpiralMotion {
     0% {
         transform: translate(0, 0) rotate(0deg) scale(1);
     }
     25% {
-        transform: translate(40px, -30px) rotate(2deg) scale(1.02);
+        transform: translate(40px, -30px) rotate(90deg) scale(1.02);
     }
     50% {
-        transform: translate(0, -20px) rotate(0deg) scale(1);
+        transform: translate(0, -20px) rotate(180deg) scale(1);
     }
     75% {
-        transform: translate(-40px, -30px) rotate(-2deg) scale(1.02);
+        transform: translate(-40px, -30px) rotate(270deg) scale(1.02);
     }
     100% {
-        transform: translate(0, 0) rotate(0deg) scale(1);
+        transform: translate(0, 0) rotate(360deg) scale(1);
     }
 }
 
-/* Enhanced spiral with floating motion */
+/* Enhanced spiral with floating motion and 360° spin */
 @keyframes cardOrbitalMotion {
     0% {
         transform: translate(0, 0) rotate(0deg) scale(1);
         filter: brightness(1);
     }
     20% {
-        transform: translate(60px, -40px) rotate(3deg) scale(1.03);
+        transform: translate(60px, -40px) rotate(72deg) scale(1.03);
         filter: brightness(1.1);
     }
     40% {
-        transform: translate(20px, -60px) rotate(-1deg) scale(1.01);
+        transform: translate(20px, -60px) rotate(144deg) scale(1.01);
         filter: brightness(1.05);
     }
     60% {
-        transform: translate(-40px, -30px) rotate(2deg) scale(1.02);
+        transform: translate(-40px, -30px) rotate(216deg) scale(1.02);
         filter: brightness(1.1);
     }
     80% {
-        transform: translate(-20px, 20px) rotate(-3deg) scale(1.01);
+        transform: translate(-20px, 20px) rotate(288deg) scale(1.01);
         filter: brightness(1.05);
     }
     100% {
-        transform: translate(0, 0) rotate(0deg) scale(1);
+        transform: translate(0, 0) rotate(360deg) scale(1);
         filter: brightness(1);
     }
 }
 
-/* Gentle floating motion */
+/* Gentle floating motion with 360° rotation */
 @keyframes cardGentleFloat {
-    0%, 100% {
+    0% {
         transform: translate(0, 0) rotate(0deg) scale(1);
     }
     33% {
-        transform: translate(20px, -15px) rotate(1deg) scale(1.01);
+        transform: translate(20px, -15px) rotate(120deg) scale(1.01);
     }
     66% {
-        transform: translate(-20px, -10px) rotate(-1deg) scale(1.01);
+        transform: translate(-20px, -10px) rotate(240deg) scale(1.01);
+    }
+    100% {
+        transform: translate(0, 0) rotate(360deg) scale(1);
     }
 }
 
