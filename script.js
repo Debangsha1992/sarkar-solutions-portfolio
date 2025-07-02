@@ -725,6 +725,7 @@ class InteractiveElements {
         this.initTextEffects();
         this.initVideoInteractions();
         this.initDroneVideoShowcase();
+        this.initPodcastVideoShowcase();
     }
     
     initAdvancedHoverEffects() {
@@ -1194,6 +1195,115 @@ class InteractiveElements {
         }
     }
     
+    initPodcastVideoShowcase() {
+        // Enhanced podcast video showcase controls
+        const showcaseVideos = document.querySelectorAll('#podcast-showcase .showcase-video');
+        const videoCards = document.querySelectorAll('#podcast-showcase .video-card');
+        const videoToggle = document.getElementById('podcast-video-toggle');
+        const progressLine = document.getElementById('podcast-video-progress-line');
+        const controlText = videoToggle?.querySelector('.control-text');
+        const controlIcon = videoToggle?.querySelector('.control-icon');
+        const videoContainer = document.querySelector('#podcast-showcase .video-showcase-container');
+        
+        // Get the specific podcast video (second showcase video)
+        const podcastVideo = showcaseVideos[showcaseVideos.length - 1];
+        const podcastVideoCard = videoCards[videoCards.length - 1];
+        
+        if (podcastVideo && videoToggle && podcastVideoCard) {
+            // Enhanced mouse interaction for podcast video card with purple glow
+            this.initPodcastVideoCardMouseInteraction(podcastVideoCard);
+            
+            // Video play/pause control with spiral animation
+            videoToggle.addEventListener('click', () => {
+                if (podcastVideo.paused) {
+                    podcastVideo.play();
+                    controlText.textContent = 'Pause';
+                    controlIcon.textContent = '⏸';
+                    videoToggle.classList.add('playing');
+                    videoContainer.classList.remove('paused');
+                } else {
+                    podcastVideo.pause();
+                    controlText.textContent = 'Play';
+                    controlIcon.textContent = '▶';
+                    videoToggle.classList.remove('playing');
+                    videoContainer.classList.add('paused');
+                }
+            });
+            
+            // Enhanced spiral effects - add different animation modes for the card
+            let spiralMode = 'default';
+            
+            // Add spiral mode toggle (optional - can be triggered by double-click)
+            podcastVideoCard.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                
+                // Cycle through spiral modes
+                podcastVideoCard.classList.remove('dramatic-spiral', 'gentle-spiral');
+                
+                switch(spiralMode) {
+                    case 'default':
+                        spiralMode = 'dramatic';
+                        podcastVideoCard.classList.add('dramatic-spiral');
+                        console.log('Podcast: Switched to dramatic spiral mode');
+                        break;
+                    case 'dramatic':
+                        spiralMode = 'gentle';
+                        podcastVideoCard.classList.add('gentle-spiral');
+                        console.log('Podcast: Switched to gentle spiral mode');
+                        break;
+                    case 'gentle':
+                        spiralMode = 'default';
+                        console.log('Podcast: Switched to default spiral mode');
+                        break;
+                }
+                
+                // Show mode indicator
+                this.showPodcastSpiralModeIndicator(spiralMode);
+            });
+            
+            // Video progress tracking
+            podcastVideo.addEventListener('timeupdate', () => {
+                if (progressLine && podcastVideo.duration) {
+                    const progress = (podcastVideo.currentTime / podcastVideo.duration) * 100;
+                    progressLine.style.width = `${progress}%`;
+                }
+            });
+            
+            // Reset progress when video ends (for looping videos)
+            podcastVideo.addEventListener('ended', () => {
+                if (progressLine) {
+                    progressLine.style.width = '0%';
+                }
+            });
+            
+            // Handle video loading states
+            podcastVideo.addEventListener('loadstart', () => {
+                console.log('Podcast video loading started...');
+            });
+            
+            podcastVideo.addEventListener('canplay', () => {
+                console.log('Podcast video ready to play');
+                // Ensure animation starts when video is ready
+                videoContainer.classList.remove('paused');
+            });
+            
+            podcastVideo.addEventListener('error', (e) => {
+                console.error('Podcast video error:', e);
+                // Hide the entire video showcase if video fails to load
+                const videoShowcase = document.querySelector('#podcast-showcase');
+                if (videoShowcase) {
+                    videoShowcase.style.display = 'none';
+                }
+            });
+            
+            // Touch/click on video to pause/play (mobile-friendly)
+            podcastVideo.addEventListener('click', (e) => {
+                e.preventDefault();
+                videoToggle.click();
+            });
+        }
+    }
+    
     initVideoCardMouseInteraction(videoCard) {
         let currentTransform = '';
         let isMouseOver = false;
@@ -1307,6 +1417,112 @@ class InteractiveElements {
         indicator.textContent = `Spiral Mode: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`;
         
         const videoShowcase = document.querySelector('.drone-video-showcase');
+        videoShowcase.appendChild(indicator);
+        
+        // Animate in
+        setTimeout(() => {
+            indicator.classList.add('show');
+        }, 100);
+        
+        // Remove after delay
+        setTimeout(() => {
+            indicator.classList.remove('show');
+            setTimeout(() => {
+                if (indicator.parentNode) {
+                    indicator.remove();
+                }
+            }, 300);
+        }, 2000);
+    }
+    
+    initPodcastVideoCardMouseInteraction(videoCard) {
+        let currentTransform = '';
+        let isMouseOver = false;
+        
+        // Mouse enter - start interactive mode
+        videoCard.addEventListener('mouseenter', () => {
+            isMouseOver = true;
+            videoCard.style.transition = 'transform 0.1s ease';
+        });
+        
+        // Mouse move - 3D tilt effect with purple glow
+        videoCard.addEventListener('mousemove', (e) => {
+            if (!isMouseOver) return;
+            
+            const rect = videoCard.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            // Calculate rotation values (more subtle for video)
+            const rotateX = (y - centerY) / centerY * 8; // Max 8 degrees
+            const rotateY = (centerX - x) / centerX * 8; // Max 8 degrees
+            
+            // Calculate scale and translate values for depth
+            const scale = 1.02;
+            const translateZ = 20;
+            
+            // Apply transform while preserving any existing spiral animation
+            const interactiveTransform = `
+                perspective(1000px) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg) 
+                scale(${scale}) 
+                translateZ(${translateZ}px)
+            `;
+            
+            videoCard.style.transform = interactiveTransform;
+            
+            // Add purple glow effect based on mouse position
+            const glowIntensity = Math.min(Math.abs(rotateX) + Math.abs(rotateY), 10) / 10;
+            const glowOpacity = 0.3 + (glowIntensity * 0.3);
+            videoCard.style.boxShadow = `
+                0 ${20 + glowIntensity * 20}px ${40 + glowIntensity * 40}px rgba(147, 51, 234, ${glowOpacity}),
+                0 0 ${30 + glowIntensity * 50}px rgba(147, 51, 234, ${glowOpacity * 0.5})
+            `;
+        });
+        
+        // Mouse leave - return to original state
+        videoCard.addEventListener('mouseleave', () => {
+            isMouseOver = false;
+            videoCard.style.transition = 'transform 0.4s ease, box-shadow 0.4s ease';
+            
+            // Reset to original transform (keeping spiral animation)
+            videoCard.style.transform = '';
+            videoCard.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.3)';
+            
+            // Restore original transition after reset
+            setTimeout(() => {
+                videoCard.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+            }, 400);
+        });
+        
+        // Click effect - pulse animation
+        videoCard.addEventListener('click', (e) => {
+            // Don't interfere with video controls
+            if (e.target.tagName.toLowerCase() === 'video') return;
+            
+            // Create pulse effect
+            videoCard.style.transform = 'scale(0.98)';
+            videoCard.style.transition = 'transform 0.1s ease';
+            
+            setTimeout(() => {
+                videoCard.style.transform = isMouseOver ? 
+                    videoCard.style.transform : '';
+                videoCard.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+            }, 100);
+        });
+    }
+    
+    showPodcastSpiralModeIndicator(mode) {
+        // Show spiral mode indicator for podcast
+        const indicator = document.createElement('div');
+        indicator.className = 'spiral-mode-indicator';
+        indicator.textContent = `Podcast Spiral Mode: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`;
+        
+        const videoShowcase = document.querySelector('#podcast-showcase');
         videoShowcase.appendChild(indicator);
         
         // Animate in

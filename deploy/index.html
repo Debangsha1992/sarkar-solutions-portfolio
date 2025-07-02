@@ -277,50 +277,6 @@
             </div>
         </section>
 
-        <!-- Drone Scanning Video Showcase -->
-        <section id="drone-showcase" class="drone-video-showcase">
-            <div class="video-showcase-container">
-                <div class="video-background">
-                    <div class="video-card">
-                        <video autoplay muted loop playsinline class="showcase-video">
-                            <source src="videos/drone-scanning-demo.mp4" type="video/mp4">
-                            Your browser does not support the video tag.
-                        </video>
-                    </div>
-                </div>
-                <div class="video-overlay-content">
-                    <div class="showcase-label">
-                        <span class="label-text">Featured Project</span>
-                    </div>
-                    <h2 class="showcase-title">
-                        <span class="title-line">Drone City</span>
-                        <span class="title-line">Scanning</span>
-                    </h2>
-                    <div class="showcase-badges">
-                        <span class="showcase-badge">3D Reconstruction</span>
-                        <span class="showcase-badge">AI-Powered</span>
-                        <span class="showcase-badge">Real-time</span>
-                    </div>
-                    <p class="showcase-description">
-                        Transforming aerial footage into detailed 3D models using advanced photogrammetry 
-                        and neural reconstruction techniques. Watch as raw drone data becomes immersive digital twins.
-                    </p>
-                    <div class="showcase-actions">
-                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
-                            Explore Projects
-                        </button>
-                        <button class="btn btn-secondary video-control-btn" id="video-toggle">
-                            <span class="control-text">Pause</span>
-                            <span class="control-icon">⏸</span>
-                        </button>
-                    </div>
-                </div>
-                <div class="video-progress">
-                    <div class="progress-line" id="video-progress-line"></div>
-                </div>
-            </div>
-        </section>
-
         <!-- About Section -->
         <section id="about" class="about">
             <div class="container">
@@ -467,6 +423,94 @@
                             </p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drone Scanning Video Showcase -->
+        <section id="drone-showcase" class="drone-video-showcase">
+            <div class="video-showcase-container">
+                <div class="video-background">
+                    <div class="video-card">
+                        <video autoplay muted loop playsinline class="showcase-video">
+                            <source src="videos/drone-scanning-demo.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="video-overlay-content">
+                    <div class="showcase-label">
+                        <span class="label-text">Featured Project</span>
+                    </div>
+                    <h2 class="showcase-title">
+                        <span class="title-line">Drone City</span>
+                        <span class="title-line">Scanning</span>
+                    </h2>
+                    <div class="showcase-badges">
+                        <span class="showcase-badge">3D Reconstruction</span>
+                        <span class="showcase-badge">AI-Powered</span>
+                        <span class="showcase-badge">Real-time</span>
+                    </div>
+                    <p class="showcase-description">
+                        Transforming aerial footage into detailed 3D models using advanced photogrammetry 
+                        and neural reconstruction techniques. Watch as raw drone data becomes immersive digital twins.
+                    </p>
+                    <div class="showcase-actions">
+                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
+                            Explore Projects
+                        </button>
+                        <button class="btn btn-secondary video-control-btn" id="video-toggle">
+                            <span class="control-text">Pause</span>
+                            <span class="control-icon">⏸</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="video-progress">
+                    <div class="progress-line" id="video-progress-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Podcasting Video Showcase -->
+        <section id="podcast-showcase" class="drone-video-showcase">
+            <div class="video-showcase-container">
+                <div class="video-background">
+                    <div class="video-card">
+                        <video autoplay muted loop playsinline class="showcase-video">
+                            <source src="videos/podcast-highlights.mp4" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                </div>
+                <div class="video-overlay-content">
+                    <div class="showcase-label">
+                        <span class="label-text">Featured Content</span>
+                    </div>
+                    <h2 class="showcase-title">
+                        <span class="title-line">AI</span>
+                        <span class="title-line">Podcasting</span>
+                    </h2>
+                    <div class="showcase-badges">
+                        <span class="showcase-badge">AI Education</span>
+                        <span class="showcase-badge">Technical Communication</span>
+                        <span class="showcase-badge">Multi-Platform</span>
+                    </div>
+                    <p class="showcase-description">
+                        Bringing complex AI concepts to mainstream audiences through engaging podcast episodes. 
+                        Available on YouTube, Spotify, and Apple Podcasts, making cutting-edge machine learning accessible to everyone.
+                    </p>
+                    <div class="showcase-actions">
+                        <button class="btn btn-primary" onclick="window.open('https://lnkd.in/gYsGUaeN', '_blank')">
+                            Watch on YouTube
+                        </button>
+                        <button class="btn btn-secondary video-control-btn" id="podcast-video-toggle">
+                            <span class="control-text">Pause</span>
+                            <span class="control-icon">⏸</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="video-progress">
+                    <div class="progress-line" id="podcast-video-progress-line"></div>
                 </div>
             </div>
         </section>
@@ -672,22 +716,7 @@
             </div>
         </section>
 
-        <!-- Quote Section -->
-        <section class="quote-section">
-            <div class="container">
-                <div class="quote-content">
-                    <h2 class="quote-title">2 Questions<br>2 Answers</h2>
-                    <div class="quotes">
-                        <div class="quote-item" data-scroll="true">
-                            <p class="quote-text">"I chose the language of code and AI because they are universal tools for solving humanity's greatest challenges"</p>
-                        </div>
-                        <div class="quote-item" data-scroll="true">
-                            <p class="quote-text">"Every challenge is an opportunity to innovate and push the boundaries of what's possible with machine learning"</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+
 
         <!-- Contact Section -->
         <section id="contact" class="contact">

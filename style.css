@@ -1161,7 +1161,7 @@ section {
         width: 90%;
         max-width: none;
         /* Reduce card movement on mobile */
-        animation: cardGentleFloat 20s ease-in-out infinite;
+        animation: cardGentleFloat 12s ease-in-out infinite;
     }
     
     .video-overlay-content {
@@ -1966,7 +1966,7 @@ body.keyboard-navigation *:focus {
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     position: relative;
-    animation: cardSpiralMotion 15s ease-in-out infinite;
+    animation: cardSpiralMotion 8s ease-in-out infinite;
     background: #000;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -2050,11 +2050,11 @@ body.keyboard-navigation *:focus {
 
 /* Alternative motion modes */
 .video-card.dramatic-spiral {
-    animation: cardOrbitalMotion 20s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    animation: cardOrbitalMotion 12s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 .video-card.gentle-spiral {
-    animation: cardGentleFloat 25s ease-in-out infinite;
+    animation: cardGentleFloat 15s ease-in-out infinite;
 }
 
 /* Pause animation when video is paused */
@@ -2136,7 +2136,7 @@ body.keyboard-navigation *:focus {
     font-family: var(--font-primary);
     font-size: clamp(4rem, 10vw, 8rem);
     font-weight: 700;
-    line-height: 0.9;
+    line-height: 1.1;
     margin-bottom: 2rem;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
