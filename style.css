@@ -2069,7 +2069,7 @@ body.keyboard-navigation *:focus {
 
 /* Podcast video card specific styling */
 #podcast-showcase .video-card {
-    animation: podcastWobble 6s ease-in-out infinite;
+    animation: podcastWobble 60s ease-in-out infinite;
 }
 
 /* Alternative motion modes */
