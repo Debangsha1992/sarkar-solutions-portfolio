@@ -1703,6 +1703,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const pokemonCarousel = new PokemonCardsCarousel();
     const timelineHeadscan = new TimelineHeadScanViewer();
     
+    // Initialize premium project sections
+    initializePremiumProjects();
+    
     // Start the loading sequence
     loadingManager.init();
 });
@@ -2205,5 +2208,424 @@ class TimelineHeadScanViewer {
         }
         
         this.renderer.render(this.scene, this.camera);
+    }
+}
+
+// Premium Project Sections Interactive Elements
+function initializePremiumProjects() {
+    // Initialize 3D Drone Viewport
+    const droneViewport = document.getElementById('drone-3d-viewport');
+    if (droneViewport) {
+        initDroneViewport(droneViewport);
+    }
+    
+    // Initialize Podcast Visualizer
+    const podcastVisualizer = document.getElementById('podcast-visualizer');
+    if (podcastVisualizer) {
+        initPodcastVisualizer(podcastVisualizer);
+    }
+    
+    // Initialize floating card animations
+    initFloatingCards();
+    
+    // Initialize floating geometric elements
+    initFloatingGeometry();
+}
+
+function initDroneViewport(viewport) {
+    // Create 3D geometric shape
+    const shape = document.createElement('div');
+    shape.className = 'drone-3d-shape';
+    shape.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 120px;
+        height: 120px;
+        transform: translate(-50%, -50%);
+        transform-style: preserve-3d;
+        animation: droneFloat 8s ease-in-out infinite;
+    `;
+    
+    // Create cube faces
+    const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
+    faces.forEach((face, index) => {
+        const faceElement = document.createElement('div');
+        faceElement.className = `drone-face drone-face-${face}`;
+        faceElement.style.cssText = `
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: linear-gradient(45deg, 
+                rgba(99, 102, 241, 0.1), 
+                rgba(6, 182, 212, 0.1));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        `;
+        
+        // Position faces
+        switch(face) {
+            case 'front':
+                faceElement.style.transform = 'rotateY(0deg) translateZ(60px)';
+                break;
+            case 'back':
+                faceElement.style.transform = 'rotateY(180deg) translateZ(60px)';
+                break;
+            case 'right':
+                faceElement.style.transform = 'rotateY(90deg) translateZ(60px)';
+                break;
+            case 'left':
+                faceElement.style.transform = 'rotateY(-90deg) translateZ(60px)';
+                break;
+            case 'top':
+                faceElement.style.transform = 'rotateX(90deg) translateZ(60px)';
+                break;
+            case 'bottom':
+                faceElement.style.transform = 'rotateX(-90deg) translateZ(60px)';
+                break;
+        }
+        
+        shape.appendChild(faceElement);
+    });
+    
+    viewport.appendChild(shape);
+    
+    // Add control handlers
+    const controls = viewport.querySelectorAll('.control-btn');
+    controls.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const action = e.target.dataset.action;
+            handleDroneViewportAction(action, shape);
+        });
+    });
+    
+    // Add CSS animations
+    if (!document.querySelector('#drone-animations')) {
+        const style = document.createElement('style');
+        style.id = 'drone-animations';
+        style.textContent = `
+            @keyframes droneFloat {
+                0%, 100% { 
+                    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+                }
+                25% { 
+                    transform: translate(-50%, -50%) rotateX(15deg) rotateY(90deg) rotateZ(5deg);
+                }
+                50% { 
+                    transform: translate(-50%, -50%) rotateX(0deg) rotateY(180deg) rotateZ(0deg);
+                }
+                75% { 
+                    transform: translate(-50%, -50%) rotateX(-15deg) rotateY(270deg) rotateZ(-5deg);
+                }
+            }
+            @keyframes droneRotate {
+                0% { transform: translate(-50%, -50%) rotateY(0deg); }
+                100% { transform: translate(-50%, -50%) rotateY(720deg); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function handleDroneViewportAction(action, shape) {
+    switch(action) {
+        case 'rotate':
+            shape.style.animation = 'droneRotate 2s ease-in-out';
+            setTimeout(() => {
+                shape.style.animation = 'droneFloat 8s ease-in-out infinite';
+            }, 2000);
+            break;
+        case 'zoom':
+            shape.style.transform = 'translate(-50%, -50%) scale(1.5)';
+            setTimeout(() => {
+                shape.style.transform = 'translate(-50%, -50%) scale(1)';
+            }, 1000);
+            break;
+        case 'reset':
+            shape.style.animation = 'none';
+            shape.style.transform = 'translate(-50%, -50%)';
+            setTimeout(() => {
+                shape.style.animation = 'droneFloat 8s ease-in-out infinite';
+            }, 100);
+            break;
+    }
+}
+
+function initPodcastVisualizer(visualizer) {
+    const visualizationArea = visualizer.querySelector('.visualization-area');
+    if (!visualizationArea) return;
+    
+    // Create initial waveform
+    createWaveformVisualization(visualizationArea);
+    
+    // Add control handlers
+    const controls = visualizer.querySelectorAll('.viz-btn');
+    controls.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const mode = e.target.dataset.mode;
+            handleVisualizerMode(mode, visualizationArea);
+            
+            // Update active button
+            controls.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        });
+    });
+    
+    // Set initial active button
+    const waveformBtn = visualizer.querySelector('[data-mode="waveform"]');
+    if (waveformBtn) waveformBtn.classList.add('active');
+}
+
+function createWaveformVisualization(container) {
+    const waveform = document.createElement('div');
+    waveform.className = 'podcast-waveform';
+    waveform.style.cssText = `
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: end;
+        gap: 3px;
+        height: 80px;
+    `;
+    
+    // Create waveform bars
+    for (let i = 0; i < 40; i++) {
+        const bar = document.createElement('div');
+        bar.className = 'waveform-bar';
+        bar.style.cssText = `
+            width: 4px;
+            background: linear-gradient(to top, 
+                rgba(147, 51, 234, 0.8), 
+                rgba(236, 72, 153, 0.6));
+            border-radius: 2px;
+            animation: waveformPulse ${0.5 + Math.random() * 1}s ease-in-out infinite alternate;
+            animation-delay: ${i * 0.05}s;
+            height: ${20 + Math.random() * 60}px;
+        `;
+        waveform.appendChild(bar);
+    }
+    
+    container.appendChild(waveform);
+    
+    // Add waveform animation
+    if (!document.querySelector('#waveform-animations')) {
+        const style = document.createElement('style');
+        style.id = 'waveform-animations';
+        style.textContent = `
+            @keyframes waveformPulse {
+                0% { transform: scaleY(0.3); opacity: 0.6; }
+                100% { transform: scaleY(1); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function createFrequencyVisualization(container) {
+    const frequency = document.createElement('div');
+    frequency.className = 'podcast-frequency';
+    frequency.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 200px;
+        height: 200px;
+        border: 2px solid rgba(147, 51, 234, 0.3);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    `;
+    
+    // Create frequency rings
+    for (let i = 0; i < 5; i++) {
+        const ring = document.createElement('div');
+        ring.style.cssText = `
+            position: absolute;
+            border: 1px solid rgba(236, 72, 153, ${0.2 + i * 0.1});
+            border-radius: 50%;
+            width: ${40 + i * 30}px;
+            height: ${40 + i * 30}px;
+            animation: frequencyPulse ${1 + i * 0.3}s ease-in-out infinite;
+            animation-delay: ${i * 0.2}s;
+        `;
+        frequency.appendChild(ring);
+    }
+    
+    container.appendChild(frequency);
+    
+    // Add frequency animation
+    if (!document.querySelector('#frequency-animations')) {
+        const style = document.createElement('style');
+        style.id = 'frequency-animations';
+        style.textContent = `
+            @keyframes frequencyPulse {
+                0%, 100% { 
+                    transform: scale(1); 
+                    opacity: 0.6; 
+                }
+                50% { 
+                    transform: scale(1.2); 
+                    opacity: 1; 
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function create3DSpectrumVisualization(container) {
+    const spectrum = document.createElement('div');
+    spectrum.className = 'podcast-3d-spectrum';
+    spectrum.style.cssText = `
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transform-style: preserve-3d;
+        animation: spectrum3DRotate 10s linear infinite;
+    `;
+    
+    // Create 3D spectrum bars
+    for (let i = 0; i < 20; i++) {
+        const bar = document.createElement('div');
+        bar.style.cssText = `
+            position: absolute;
+            width: 8px;
+            height: ${20 + Math.random() * 80}px;
+            background: linear-gradient(to top, 
+                rgba(147, 51, 234, 0.8), 
+                rgba(236, 72, 153, 0.8));
+            transform: rotateY(${i * 18}deg) translateZ(60px);
+            animation: spectrumBarPulse ${0.5 + Math.random() * 1}s ease-in-out infinite alternate;
+            animation-delay: ${i * 0.1}s;
+        `;
+        spectrum.appendChild(bar);
+    }
+    
+    container.appendChild(spectrum);
+    
+    // Add 3D spectrum animations
+    if (!document.querySelector('#spectrum-animations')) {
+        const style = document.createElement('style');
+        style.id = 'spectrum-animations';
+        style.textContent = `
+            @keyframes spectrum3DRotate {
+                0% { transform: translate(-50%, -50%) rotateY(0deg); }
+                100% { transform: translate(-50%, -50%) rotateY(360deg); }
+            }
+            @keyframes spectrumBarPulse {
+                0% { transform: rotateY(var(--rotation, 0deg)) translateZ(60px) scaleY(0.3); }
+                100% { transform: rotateY(var(--rotation, 0deg)) translateZ(60px) scaleY(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+}
+
+function handleVisualizerMode(mode, visualizationArea) {
+    // Remove existing visualizations
+    const existing = visualizationArea.querySelectorAll('.podcast-waveform, .podcast-frequency, .podcast-3d-spectrum');
+    existing.forEach(el => el.remove());
+    
+    switch(mode) {
+        case 'waveform':
+            createWaveformVisualization(visualizationArea);
+            break;
+        case 'frequency':
+            createFrequencyVisualization(visualizationArea);
+            break;
+        case '3d':
+            create3DSpectrumVisualization(visualizationArea);
+            break;
+    }
+}
+
+function initFloatingCards() {
+    const cards = document.querySelectorAll('.floating-card');
+    cards.forEach((card, index) => {
+        // Stagger animation delays
+        card.style.animationDelay = `${index * 0.2}s`;
+        
+        // Add enhanced mouse tracking
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -10;
+            const rotateY = ((x - centerX) / centerX) * 10;
+            
+            card.style.transform = `
+                translateY(-20px) 
+                rotateX(${rotateX}deg) 
+                rotateY(${rotateY}deg)
+                perspective(1000px)
+            `;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = '';
+        });
+    });
+}
+
+function initFloatingGeometry() {
+    const sections = document.querySelectorAll('.premium-project-section');
+    sections.forEach(section => {
+        for (let i = 0; i < 3; i++) {
+            const geometry = document.createElement('div');
+            geometry.className = 'floating-geometry';
+            geometry.style.cssText = `
+                position: absolute;
+                width: ${20 + Math.random() * 40}px;
+                height: ${20 + Math.random() * 40}px;
+                background: linear-gradient(45deg, 
+                    rgba(255, 255, 255, 0.03), 
+                    rgba(255, 255, 255, 0.08));
+                border-radius: ${Math.random() > 0.5 ? '50%' : '20%'};
+                top: ${Math.random() * 80}%;
+                left: ${Math.random() * 80}%;
+                animation: floatingGeometry ${10 + Math.random() * 10}s ease-in-out infinite;
+                animation-delay: ${Math.random() * 5}s;
+                pointer-events: none;
+                z-index: 1;
+            `;
+            
+            section.appendChild(geometry);
+        }
+    });
+    
+    // Add floating geometry animation
+    if (!document.querySelector('#floating-geometry-animations')) {
+        const style = document.createElement('style');
+        style.id = 'floating-geometry-animations';
+        style.textContent = `
+            @keyframes floatingGeometry {
+                0%, 100% { 
+                    transform: translate(0, 0) rotate(0deg) scale(1);
+                    opacity: 0.3;
+                }
+                25% { 
+                    transform: translate(30px, -20px) rotate(90deg) scale(1.1);
+                    opacity: 0.6;
+                }
+                50% { 
+                    transform: translate(-20px, -40px) rotate(180deg) scale(0.9);
+                    opacity: 0.4;
+                }
+                75% { 
+                    transform: translate(-30px, 20px) rotate(270deg) scale(1.05);
+                    opacity: 0.5;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     }
 } 
