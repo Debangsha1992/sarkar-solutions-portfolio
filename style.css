@@ -2057,13 +2057,13 @@ body.keyboard-navigation *:focus {
         transform: rotate(0deg) scale(1);
     }
     25% {
-        transform: rotate(45deg) scale(1.01);
+        transform: rotate(15deg) scale(1.01);
     }
     50% {
         transform: rotate(0deg) scale(1);
     }
     75% {
-        transform: rotate(-45deg) scale(1.01);
+        transform: rotate(-15deg) scale(1.01);
     }
 }
 
