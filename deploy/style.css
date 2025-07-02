@@ -1966,7 +1966,7 @@ body.keyboard-navigation *:focus {
     overflow: hidden;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     position: relative;
-    animation: cardSpiralMotion 8s ease-in-out infinite;
+    animation: cardSpiralMotion 12s ease-in-out infinite;
     background: #000;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -2049,6 +2049,27 @@ body.keyboard-navigation *:focus {
     100% {
         transform: translate(0, 0) rotate(360deg) scale(1);
     }
+}
+
+/* Podcast Video Wobble Animation */
+@keyframes podcastWobble {
+    0%, 100% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(45deg) scale(1.01);
+    }
+    50% {
+        transform: rotate(0deg) scale(1);
+    }
+    75% {
+        transform: rotate(-45deg) scale(1.01);
+    }
+}
+
+/* Podcast video card specific styling */
+#podcast-showcase .video-card {
+    animation: podcastWobble 6s ease-in-out infinite;
 }
 
 /* Alternative motion modes */
