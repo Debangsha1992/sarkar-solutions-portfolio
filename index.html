@@ -519,100 +519,126 @@
         </section>
 
         <!-- Drone City Scanning & 3D Gaussian Splatting Project Section -->
-        <section id="drone-project-section" class="premium-project-section drone-project">
-            <div class="project-background">
-                <div class="geometric-overlay"></div>
-                <div class="floating-elements"></div>
-            </div>
+                  <section id="drone-project-section" class="premium-project-section drone-project">
+              <div class="project-background">
+                  <div class="threejs-background" id="drone-threejs-bg"></div>
+                  <div class="neural-network-bg"></div>
+                  <div class="floating-particles"></div>
+                  <div class="depth-layers"></div>
+              </div>
             <div class="container">
                 <div class="project-header">
-                    <div class="project-badge">Featured Innovation</div>
+                    <div class="project-badge">
+                        <span class="badge-glow"></span>
+                        <span class="badge-text">Advanced Neural Reconstruction</span>
+                    </div>
                     <h2 class="project-main-title">
-                        <span class="title-word">Drone City</span>
-                        <span class="title-word">Scanning</span>
+                        <span class="title-word" data-text="Drone">Drone</span>
+                        <span class="title-word" data-text="City">City</span>
+                        <span class="title-word" data-text="Scanning">Scanning</span>
                         <span class="title-accent">&</span>
-                        <span class="title-word">3D Gaussian</span>
-                        <span class="title-word">Splatting</span>
+                        <span class="title-word" data-text="3D">3D</span>
+                        <span class="title-word" data-text="Gaussian">Gaussian</span>
+                        <span class="title-word" data-text="Splatting">Splatting</span>
                     </h2>
-                    <p class="project-subtitle">Advanced photogrammetry meets neural rendering for unprecedented 3D reconstruction</p>
+                    <p class="project-subtitle">Revolutionary photogrammetry meets neural rendering for unprecedented 3D reconstruction</p>
                 </div>
 
                 <div class="project-content-grid">
-                    <div class="floating-card primary-card">
-                        <div class="card-glow"></div>
+                    <!-- Neural Processing Card -->
+                    <div class="floating-card neural-card">
+                        <div class="card-atmosphere"></div>
                         <div class="card-content">
-                            <h3 class="card-title">Real-Time Reconstruction</h3>
+                            <div class="card-icon">
+                                <div class="icon-geometry"></div>
+                                <div class="icon-particles"></div>
+                            </div>
+                            <h3 class="card-title">Neural Processing Pipeline</h3>
                             <p class="card-description">
-                                Transform aerial footage into detailed 3D models using cutting-edge photogrammetry algorithms
-                                and neural reconstruction techniques. Our pipeline processes thousands of drone images to create
-                                immersive digital twins of entire city blocks.
+                                Advanced neural networks process raw drone footage through sophisticated 3D reconstruction algorithms. 
+                                Our pipeline combines structure-from-motion with deep learning for unprecedented accuracy.
                             </p>
                             <div class="tech-showcase">
                                 <div class="tech-item">
-                                    <span class="tech-icon">🔬</span>
-                                    <span class="tech-name">NeRF Integration</span>
+                                    <span class="tech-icon">🧠</span>
+                                    <span class="tech-name">Deep Learning</span>
+                                    <span class="tech-desc">Neural Networks</span>
                                 </div>
                                 <div class="tech-item">
-                                    <span class="tech-icon">🎯</span>
-                                    <span class="tech-name">SLAM Processing</span>
+                                    <span class="tech-icon">📐</span>
+                                    <span class="tech-name">SLAM</span>
+                                    <span class="tech-desc">Real-time Mapping</span>
                                 </div>
                                 <div class="tech-item">
                                     <span class="tech-icon">⚡</span>
                                     <span class="tech-name">GPU Acceleration</span>
+                                    <span class="tech-desc">CUDA Processing</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="floating-card secondary-card">
-                        <div class="card-glow"></div>
+                    <!-- Gaussian Splatting Card -->
+                    <div class="floating-card gaussian-card">
+                        <div class="card-atmosphere"></div>
                         <div class="card-content">
-                            <h3 class="card-title">Gaussian Splatting Technology</h3>
+                            <div class="card-icon">
+                                <div class="icon-splats"></div>
+                            </div>
+                            <h3 class="card-title">3D Gaussian Splatting</h3>
                             <p class="card-description">
-                                Revolutionary 3D rendering using Gaussian primitives for real-time, high-fidelity visualization
-                                of complex urban environments. Achieves photorealistic quality with unprecedented performance.
+                                State-of-the-art 3D representation using Gaussian splats for real-time rendering. 
+                                Each point cloud becomes a collection of anisotropic Gaussians for photorealistic reconstruction.
                             </p>
                             <div class="metrics-grid">
-                                <div class="metric">
-                                    <span class="metric-value">95%</span>
-                                    <span class="metric-label">Accuracy</span>
+                                <div class="metric-item">
+                                    <div class="metric-value">95%</div>
+                                    <div class="metric-label">Reconstruction Accuracy</div>
                                 </div>
-                                <div class="metric">
-                                    <span class="metric-value">60fps</span>
-                                    <span class="metric-label">Real-time</span>
+                                <div class="metric-item">
+                                    <div class="metric-value">60fps</div>
+                                    <div class="metric-label">Real-time Rendering</div>
                                 </div>
-                                <div class="metric">
-                                    <span class="metric-value">10cm</span>
-                                    <span class="metric-label">Precision</span>
+                                <div class="metric-item">
+                                    <div class="metric-value">10cm</div>
+                                    <div class="metric-label">Precision Level</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="floating-card tertiary-card">
-                        <div class="card-glow"></div>
+                    <!-- Applications Card -->
+                    <div class="floating-card applications-card">
+                        <div class="card-atmosphere"></div>
                         <div class="card-content">
-                            <h3 class="card-title">Applications & Impact</h3>
-                            <div class="application-list">
+                            <div class="card-icon">
+                                <div class="icon-applications"></div>
+                            </div>
+                            <h3 class="card-title">Real-World Applications</h3>
+                            <p class="card-description">
+                                From urban planning to virtual production, our 3D reconstruction technology enables 
+                                unprecedented digital twin creation for various industries.
+                            </p>
+                            <div class="applications-showcase">
                                 <div class="app-item">
-                                    <div class="app-icon">🏗️</div>
-                                    <div class="app-text">
-                                        <h4>Urban Planning</h4>
-                                        <p>Digital twins for city development</p>
+                                    <div class="app-icon">🏙️</div>
+                                    <div class="app-content">
+                                        <div class="app-name">Urban Planning</div>
+                                        <div class="app-desc">City Development</div>
                                     </div>
                                 </div>
                                 <div class="app-item">
                                     <div class="app-icon">🎬</div>
-                                    <div class="app-text">
-                                        <h4>Virtual Production</h4>
-                                        <p>Photorealistic environments for film</p>
+                                    <div class="app-content">
+                                        <div class="app-name">Virtual Production</div>
+                                        <div class="app-desc">Film & Media</div>
                                     </div>
                                 </div>
                                 <div class="app-item">
-                                    <div class="app-icon">🔍</div>
-                                    <div class="app-text">
-                                        <h4>Infrastructure Analysis</h4>
-                                        <p>Precise monitoring and inspection</p>
+                                    <div class="app-icon">🏗️</div>
+                                    <div class="app-content">
+                                        <div class="app-name">Infrastructure</div>
+                                        <div class="app-desc">Analysis & Monitoring</div>
                                     </div>
                                 </div>
                             </div>
@@ -620,17 +646,35 @@
                     </div>
                 </div>
 
+                <!-- Advanced 3D Viewport -->
                 <div class="project-media-section">
                     <div class="media-card interactive-3d">
                         <div class="media-header">
-                            <h4>Interactive 3D Visualization</h4>
-                            <p>Experience the technology in action</p>
+                            <h4>Interactive Neural Reconstruction</h4>
+                            <p>Experience the technology in real-time</p>
                         </div>
                         <div class="media-viewport" id="drone-3d-viewport">
+                            <div class="viewport-loading">
+                                <div class="neural-loader"></div>
+                                <span>Initializing Neural Network...</span>
+                            </div>
                             <div class="viewport-controls">
-                                <button class="control-btn" data-action="rotate">🔄 Rotate</button>
-                                <button class="control-btn" data-action="zoom">🔍 Zoom</button>
-                                <button class="control-btn" data-action="reset">↻ Reset</button>
+                                <button class="control-btn advanced-btn" data-action="neural-rotate">
+                                    <span class="btn-icon">🔄</span>
+                                    <span class="btn-text">Neural Rotate</span>
+                                </button>
+                                <button class="control-btn advanced-btn" data-action="gaussian-focus">
+                                    <span class="btn-icon">🎯</span>
+                                    <span class="btn-text">Gaussian Focus</span>
+                                </button>
+                                <button class="control-btn advanced-btn" data-action="depth-analysis">
+                                    <span class="btn-icon">📊</span>
+                                    <span class="btn-text">Depth Analysis</span>
+                                </button>
+                                <button class="control-btn advanced-btn" data-action="reset-view">
+                                    <span class="btn-icon">↻</span>
+                                    <span class="btn-text">Reset View</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -639,102 +683,133 @@
         </section>
 
         <!-- AI Podcast & Technical Communication Project Section -->
-        <section id="podcast-project-section" class="premium-project-section podcast-project">
-            <div class="project-background">
-                <div class="geometric-overlay podcast-overlay"></div>
-                <div class="floating-elements podcast-elements"></div>
-            </div>
+                  <section id="podcast-project-section" class="premium-project-section podcast-project">
+              <div class="project-background">
+                  <div class="threejs-background" id="podcast-threejs-bg"></div>
+                  <div class="audio-wave-bg"></div>
+                  <div class="frequency-particles"></div>
+                  <div class="sound-layers"></div>
+              </div>
             <div class="container">
                 <div class="project-header">
-                    <div class="project-badge podcast-badge">Content Innovation</div>
+                    <div class="project-badge podcast-badge">
+                        <span class="badge-glow podcast-glow"></span>
+                        <span class="badge-text">AI Communication Innovation</span>
+                    </div>
                     <h2 class="project-main-title">
-                        <span class="title-word">AI Podcast</span>
+                        <span class="title-word" data-text="AI">AI</span>
+                        <span class="title-word" data-text="Podcast">Podcast</span>
                         <span class="title-accent">&</span>
-                        <span class="title-word">Technical</span>
-                        <span class="title-word">Communication</span>
+                        <span class="title-word" data-text="Technical">Technical</span>
+                        <span class="title-word" data-text="Communication">Communication</span>
                     </h2>
                     <p class="project-subtitle">Bridging complex AI concepts with accessible, engaging storytelling</p>
                 </div>
 
                 <div class="project-content-grid">
-                    <div class="floating-card primary-card podcast-card">
-                        <div class="card-glow podcast-glow"></div>
+                    <!-- Content Strategy Card -->
+                    <div class="floating-card content-card">
+                        <div class="card-atmosphere podcast-atmosphere"></div>
                         <div class="card-content">
+                            <div class="card-icon">
+                                <div class="icon-microphone"></div>
+                                <div class="icon-waves"></div>
+                            </div>
                             <h3 class="card-title">Multi-Platform Strategy</h3>
                             <p class="card-description">
                                 Creating compelling AI education content across YouTube, Spotify, and Apple Podcasts.
-                                Breaking down complex machine learning concepts into digestible, engaging narratives
-                                that resonate with both technical and general audiences.
+                                Breaking down complex machine learning concepts into digestible, engaging narratives.
                             </p>
                             <div class="platform-showcase">
                                 <div class="platform-item">
-                                    <span class="platform-icon">📺</span>
-                                    <span class="platform-name">YouTube</span>
-                                    <span class="platform-stat">Visual Learning</span>
+                                    <div class="platform-icon">📺</div>
+                                    <div class="platform-content">
+                                        <div class="platform-name">YouTube</div>
+                                        <div class="platform-desc">Visual Learning</div>
+                                        <div class="platform-metrics">Video Content</div>
+                                    </div>
                                 </div>
                                 <div class="platform-item">
-                                    <span class="platform-icon">🎵</span>
-                                    <span class="platform-name">Spotify</span>
-                                    <span class="platform-stat">Audio Deep-Dives</span>
+                                    <div class="platform-icon">🎵</div>
+                                    <div class="platform-content">
+                                        <div class="platform-name">Spotify</div>
+                                        <div class="platform-desc">Audio Deep-Dives</div>
+                                        <div class="platform-metrics">Podcast Series</div>
+                                    </div>
                                 </div>
                                 <div class="platform-item">
-                                    <span class="platform-icon">🍎</span>
-                                    <span class="platform-name">Apple Podcasts</span>
-                                    <span class="platform-stat">Premium Quality</span>
+                                    <div class="platform-icon">🍎</div>
+                                    <div class="platform-content">
+                                        <div class="platform-name">Apple Podcasts</div>
+                                        <div class="platform-desc">Premium Quality</div>
+                                        <div class="platform-metrics">Professional Audio</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="floating-card secondary-card podcast-card">
-                        <div class="card-glow podcast-glow"></div>
+                    <!-- Content Analytics Card -->
+                    <div class="floating-card analytics-card">
+                        <div class="card-atmosphere podcast-atmosphere"></div>
                         <div class="card-content">
-                            <h3 class="card-title">Content Philosophy</h3>
+                            <div class="card-icon">
+                                <div class="icon-analytics"></div>
+                            </div>
+                            <h3 class="card-title">Content Impact</h3>
                             <p class="card-description">
-                                Making cutting-edge AI research accessible through storytelling, real-world applications,
-                                and practical insights. Every episode bridges the gap between academic research and industry application.
+                                Transforming how audiences understand AI through data-driven storytelling and 
+                                comprehensive technical education across multiple platforms.
                             </p>
                             <div class="content-metrics">
-                                <div class="content-metric">
-                                    <span class="metric-value">50+</span>
-                                    <span class="metric-label">Episodes</span>
+                                <div class="metric-item">
+                                    <div class="metric-value">50+</div>
+                                    <div class="metric-label">Episodes Published</div>
                                 </div>
-                                <div class="content-metric">
-                                    <span class="metric-value">10K+</span>
-                                    <span class="metric-label">Listeners</span>
+                                <div class="metric-item">
+                                    <div class="metric-value">10K+</div>
+                                    <div class="metric-label">Monthly Listeners</div>
                                 </div>
-                                <div class="content-metric">
-                                    <span class="metric-value">4.8★</span>
-                                    <span class="metric-label">Rating</span>
+                                <div class="metric-item">
+                                    <div class="metric-value">4.8★</div>
+                                    <div class="metric-label">Average Rating</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="floating-card tertiary-card podcast-card">
-                        <div class="card-glow podcast-glow"></div>
+                    <!-- Episode Highlights Card -->
+                    <div class="floating-card episodes-card">
+                        <div class="card-atmosphere podcast-atmosphere"></div>
                         <div class="card-content">
-                            <h3 class="card-title">Episode Highlights</h3>
-                            <div class="episode-list">
+                            <div class="card-icon">
+                                <div class="icon-episodes"></div>
+                            </div>
+                            <h3 class="card-title">Featured Episodes</h3>
+                            <p class="card-description">
+                                Curated selection of episodes covering cutting-edge AI research, practical implementations,
+                                and industry insights from leading experts.
+                            </p>
+                            <div class="episodes-showcase">
                                 <div class="episode-item">
                                     <div class="episode-number">01</div>
-                                    <div class="episode-text">
-                                        <h4>Neural Networks Demystified</h4>
-                                        <p>From biological inspiration to digital implementation</p>
+                                    <div class="episode-content">
+                                        <div class="episode-title">Neural Networks Demystified</div>
+                                        <div class="episode-desc">Deep dive into neural architecture</div>
                                     </div>
                                 </div>
                                 <div class="episode-item">
                                     <div class="episode-number">02</div>
-                                    <div class="episode-text">
-                                        <h4>Computer Vision Revolution</h4>
-                                        <p>How machines learned to see and understand</p>
+                                    <div class="episode-content">
+                                        <div class="episode-title">Computer Vision Revolution</div>
+                                        <div class="episode-desc">Latest in image recognition</div>
                                     </div>
                                 </div>
                                 <div class="episode-item">
                                     <div class="episode-number">03</div>
-                                    <div class="episode-text">
-                                        <h4>The Future of AI Ethics</h4>
-                                        <p>Responsible development in the age of AGI</p>
+                                    <div class="episode-content">
+                                        <div class="episode-title">Generative AI Future</div>
+                                        <div class="episode-desc">Creating content with AI</div>
                                     </div>
                                 </div>
                             </div>
@@ -742,19 +817,36 @@
                     </div>
                 </div>
 
+                <!-- Advanced Audio Visualizer -->
                 <div class="project-media-section">
-                    <div class="media-card podcast-media">
+                    <div class="media-card audio-visualizer">
                         <div class="media-header">
-                            <h4>Audio Visualization Engine</h4>
-                            <p>Interactive waveform and frequency analysis</p>
+                            <h4>Interactive Audio Visualization</h4>
+                            <p>Experience the podcast through immersive audio analysis</p>
                         </div>
-                        <div class="audio-visualizer" id="podcast-visualizer">
-                            <div class="visualizer-controls">
-                                <button class="viz-btn" data-mode="waveform">〜 Waveform</button>
-                                <button class="viz-btn" data-mode="frequency">📊 Frequency</button>
-                                <button class="viz-btn" data-mode="3d">🌐 3D Spectrum</button>
+                        <div class="visualizer-viewport" id="podcast-visualizer">
+                            <div class="visualizer-loading">
+                                <div class="audio-loader"></div>
+                                <span>Loading Audio Engine...</span>
                             </div>
-                            <div class="visualization-area"></div>
+                            <div class="visualizer-controls">
+                                <button class="control-btn advanced-btn" data-mode="spectrum">
+                                    <span class="btn-icon">📊</span>
+                                    <span class="btn-text">Spectrum</span>
+                                </button>
+                                <button class="control-btn advanced-btn" data-mode="waveform">
+                                    <span class="btn-icon">〰️</span>
+                                    <span class="btn-text">Waveform</span>
+                                </button>
+                                <button class="control-btn advanced-btn" data-mode="circular">
+                                    <span class="btn-icon">⭕</span>
+                                    <span class="btn-text">Circular</span>
+                                </button>
+                                <button class="control-btn advanced-btn" data-mode="neural">
+                                    <span class="btn-icon">🧠</span>
+                                    <span class="btn-text">Neural</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

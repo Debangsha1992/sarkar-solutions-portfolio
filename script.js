@@ -1,3 +1,51 @@
+// Mobile/iOS Detection and Optimization
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const isOldIOS = isIOS && parseFloat(navigator.userAgent.match(/OS (\d+)_(\d+)/)?.[1] || '0') < 13;
+
+// Mobile optimization configuration
+const mobileConfig = {
+    // Particle system reductions
+    starCount: isMobile ? 300 : 2000,
+    nebulaCount: isMobile ? 100 : 500,
+    spiralCount: isMobile ? 200 : 1500,
+    dustCount: isMobile ? 50 : 200,
+    
+    // Rendering optimizations
+    antialias: !isMobile,
+    shadowMapSize: isMobile ? 512 : 2048,
+    pixelRatio: isMobile ? 1 : Math.min(window.devicePixelRatio, 2),
+    
+    // Feature toggles
+    enableShadows: !isMobile,
+    enableFog: !isMobile,
+    enableBloom: !isMobile,
+    enableNeuralBackground: !isMobile,
+    enableAudioBackground: !isMobile,
+    enableAdvancedLighting: !isMobile,
+    
+    // Premium project simplifications
+    neuralNodes: isMobile ? 20 : 56,
+    gaussianSplats: isMobile ? 10 : 50,
+    maxLights: isMobile ? 1 : 3,
+    
+    // Performance limits
+    maxParticles: isMobile ? 500 : 5000,
+    targetFPS: isMobile ? 30 : 60
+};
+
+// Memory warning for very old devices
+if (isOldIOS) {
+    console.warn('Old iOS device detected - applying maximum optimizations');
+    mobileConfig.starCount = 100;
+    mobileConfig.nebulaCount = 50;
+    mobileConfig.spiralCount = 100;
+    mobileConfig.neuralNodes = 10;
+    mobileConfig.gaussianSplats = 5;
+    mobileConfig.enableAdvancedLighting = false;
+    mobileConfig.enableShadows = false;
+}
+
 // Three.js Scene Setup
 let scene, camera, renderer, particles, particleSystem;
 let nebulaClouds = [];
@@ -10,47 +58,72 @@ let windowHalfY = window.innerHeight / 2;
 let shaderMaterial, uniforms;
 let clock = new THREE.Clock();
 
-// Enhanced Three.js initialization with space effects
+// Enhanced Three.js initialization with mobile optimization
 function initThree() {
+    // Skip Three.js initialization on very old devices
+    if (isOldIOS && navigator.hardwareConcurrency < 4) {
+        console.warn('Skipping Three.js initialization on low-performance device');
+        return;
+    }
+    
     // Scene
     scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x0a0a0a, 0.0008);
+    
+    // Only add fog on desktop
+    if (mobileConfig.enableFog) {
+        scene.fog = new THREE.FogExp2(0x0a0a0a, 0.0008);
+    }
     
     // Camera
     camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
     camera.position.z = 500;
     
-    // Renderer
+    // Renderer with mobile optimizations
     renderer = new THREE.WebGLRenderer({
         canvas: document.getElementById('three-canvas'),
         alpha: true,
-        antialias: true
+        antialias: mobileConfig.antialias,
+        powerPreference: isMobile ? "low-power" : "high-performance"
     });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
     
-    // Create enhanced space effects
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(mobileConfig.pixelRatio);
+    
+    // Disable expensive features on mobile
+    if (mobileConfig.enableShadows) {
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap; // Cheaper than PCFSoft
+    }
+    
+    // Create space effects with mobile optimization
     createStarField();
     createNebulaCloud();
     createGalaxySpiral();
     createCosmicDust();
     createParticles();
     
-    // Enhanced lighting
-    const ambientLight = new THREE.AmbientLight(0x4040ff, 0.3);
-    scene.add(ambientLight);
-    
-    const pointLight1 = new THREE.PointLight(0x6366f1, 1, 1000);
-    pointLight1.position.set(300, 200, 300);
-    scene.add(pointLight1);
-    
-    const pointLight2 = new THREE.PointLight(0x8b5cf6, 0.8, 800);
-    pointLight2.position.set(-300, -200, 200);
-    scene.add(pointLight2);
-    
-    const pointLight3 = new THREE.PointLight(0x06b6d4, 0.6, 600);
-    pointLight3.position.set(200, -300, -200);
-    scene.add(pointLight3);
+    // Simplified lighting for mobile
+    if (mobileConfig.enableAdvancedLighting) {
+        // Desktop lighting
+        const ambientLight = new THREE.AmbientLight(0x4040ff, 0.3);
+        scene.add(ambientLight);
+        
+        const pointLight1 = new THREE.PointLight(0x6366f1, 1, 1000);
+        pointLight1.position.set(300, 200, 300);
+        scene.add(pointLight1);
+        
+        const pointLight2 = new THREE.PointLight(0x8b5cf6, 0.8, 800);
+        pointLight2.position.set(-300, -200, 200);
+        scene.add(pointLight2);
+        
+        const pointLight3 = new THREE.PointLight(0x06b6d4, 0.6, 600);
+        pointLight3.position.set(200, -300, -200);
+        scene.add(pointLight3);
+    } else {
+        // Mobile lighting - single ambient light
+        const ambientLight = new THREE.AmbientLight(0x6366f1, 0.8);
+        scene.add(ambientLight);
+    }
     
     // Animation loop
     animate();
@@ -58,7 +131,7 @@ function initThree() {
 
 function createStarField() {
     const starGeometry = new THREE.BufferGeometry();
-    const starCount = 2000;
+    const starCount = mobileConfig.starCount; // Reduced for mobile
     const positions = new Float32Array(starCount * 3);
     const colors = new Float32Array(starCount * 3);
     const sizes = new Float32Array(starCount);
@@ -75,23 +148,31 @@ function createStarField() {
         positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
         positions[i3 + 2] = radius * Math.cos(phi);
         
-        // Star colors (blue to white spectrum)
-        const colorChoice = Math.random();
-        if (colorChoice < 0.6) {
-            // Blue-white stars
-            colors[i3] = 0.8 + Math.random() * 0.2;
-            colors[i3 + 1] = 0.8 + Math.random() * 0.2;
-            colors[i3 + 2] = 1.0;
-        } else if (colorChoice < 0.8) {
-            // Purple stars
-            colors[i3] = 0.6 + Math.random() * 0.4;
-            colors[i3 + 1] = 0.3 + Math.random() * 0.3;
+        // Simplified colors for mobile
+        if (isMobile) {
+            // Single color for mobile
+            colors[i3] = 0.8;
+            colors[i3 + 1] = 0.8;
             colors[i3 + 2] = 1.0;
         } else {
-            // Cyan stars
-            colors[i3] = 0.0;
-            colors[i3 + 1] = 0.8 + Math.random() * 0.2;
-            colors[i3 + 2] = 1.0;
+            // Star colors (blue to white spectrum)
+            const colorChoice = Math.random();
+            if (colorChoice < 0.6) {
+                // Blue-white stars
+                colors[i3] = 0.8 + Math.random() * 0.2;
+                colors[i3 + 1] = 0.8 + Math.random() * 0.2;
+                colors[i3 + 2] = 1.0;
+            } else if (colorChoice < 0.8) {
+                // Purple stars
+                colors[i3] = 0.6 + Math.random() * 0.4;
+                colors[i3 + 1] = 0.3 + Math.random() * 0.3;
+                colors[i3 + 2] = 1.0;
+            } else {
+                // Cyan stars
+                colors[i3] = 0.0;
+                colors[i3 + 1] = 0.8 + Math.random() * 0.2;
+                colors[i3 + 2] = 1.0;
+            }
         }
         
         sizes[i] = Math.random() * 3 + 1;
@@ -106,7 +187,7 @@ function createStarField() {
         vertexColors: true,
         transparent: true,
         opacity: 0.8,
-        blending: THREE.AdditiveBlending,
+        blending: isMobile ? THREE.NormalBlending : THREE.AdditiveBlending, // Cheaper blending for mobile
         sizeAttenuation: true
     });
     
@@ -115,20 +196,23 @@ function createStarField() {
 }
 
 function createNebulaCloud() {
-    // Create multiple nebula clouds
-    for (let n = 0; n < 3; n++) {
+    // Reduce nebula clouds on mobile
+    const cloudCount = isMobile ? 1 : 3;
+    
+    // Create nebula clouds
+    for (let n = 0; n < cloudCount; n++) {
         const cloudGeometry = new THREE.BufferGeometry();
-        const cloudCount = 500;
-        const positions = new Float32Array(cloudCount * 3);
-        const colors = new Float32Array(cloudCount * 3);
-        const sizes = new Float32Array(cloudCount);
+        const particleCount = mobileConfig.nebulaCount; // Reduced for mobile
+        const positions = new Float32Array(particleCount * 3);
+        const colors = new Float32Array(particleCount * 3);
+        const sizes = new Float32Array(particleCount);
         
         // Cloud center
         const centerX = (Math.random() - 0.5) * 600;
         const centerY = (Math.random() - 0.5) * 400;
         const centerZ = (Math.random() - 0.5) * 400;
         
-        for (let i = 0; i < cloudCount; i++) {
+        for (let i = 0; i < particleCount; i++) {
             const i3 = i * 3;
             
             // Gaussian distribution for cloud-like appearance
@@ -137,17 +221,24 @@ function createNebulaCloud() {
             positions[i3 + 1] = centerY + (Math.random() - 0.5) * spread;
             positions[i3 + 2] = centerZ + (Math.random() - 0.5) * spread;
             
-            // Nebula colors (purple/blue/cyan)
-            const nebulaColors = [
-                [0.4, 0.1, 0.8], // Purple
-                [0.1, 0.3, 0.9], // Blue
-                [0.0, 0.6, 0.8]  // Cyan
-            ];
-            
-            const colorChoice = nebulaColors[n % nebulaColors.length];
-            colors[i3] = colorChoice[0] + Math.random() * 0.2;
-            colors[i3 + 1] = colorChoice[1] + Math.random() * 0.2;
-            colors[i3 + 2] = colorChoice[2] + Math.random() * 0.2;
+            // Simplified colors for mobile
+            if (isMobile) {
+                colors[i3] = 0.4;
+                colors[i3 + 1] = 0.1;
+                colors[i3 + 2] = 0.8;
+            } else {
+                // Nebula colors (purple/blue/cyan)
+                const nebulaColors = [
+                    [0.4, 0.1, 0.8], // Purple
+                    [0.1, 0.3, 0.9], // Blue
+                    [0.0, 0.6, 0.8]  // Cyan
+                ];
+                
+                const colorChoice = nebulaColors[n % nebulaColors.length];
+                colors[i3] = colorChoice[0] + Math.random() * 0.2;
+                colors[i3 + 1] = colorChoice[1] + Math.random() * 0.2;
+                colors[i3 + 2] = colorChoice[2] + Math.random() * 0.2;
+            }
             
             sizes[i] = Math.random() * 8 + 2;
         }
@@ -161,7 +252,7 @@ function createNebulaCloud() {
             vertexColors: true,
             transparent: true,
             opacity: 0.3,
-            blending: THREE.AdditiveBlending,
+            blending: isMobile ? THREE.NormalBlending : THREE.AdditiveBlending, // Cheaper blending for mobile
             sizeAttenuation: true
         });
         
@@ -173,7 +264,7 @@ function createNebulaCloud() {
 
 function createGalaxySpiral() {
     const spiralGeometry = new THREE.BufferGeometry();
-    const spiralCount = 1500;
+    const spiralCount = mobileConfig.spiralCount; // Reduced for mobile
     const positions = new Float32Array(spiralCount * 3);
     const colors = new Float32Array(spiralCount * 3);
     
@@ -189,34 +280,41 @@ function createGalaxySpiral() {
         positions[i3 + 1] = height;
         positions[i3 + 2] = Math.sin(t) * radius;
         
-        // Galaxy colors (center bright, edges dim)
-        const distanceFromCenter = radius / 350;
-        const brightness = 1 - distanceFromCenter * 0.7;
-        
-        colors[i3] = 0.3 + brightness * 0.4;     // R
-        colors[i3 + 1] = 0.5 + brightness * 0.3; // G
-        colors[i3 + 2] = 0.9 + brightness * 0.1; // B
+        // Simplified colors for mobile
+        if (isMobile) {
+            colors[i3] = 0.5;
+            colors[i3 + 1] = 0.7;
+            colors[i3 + 2] = 1.0;
+        } else {
+            // Galaxy colors (center bright, edges dim)
+            const distanceFromCenter = radius / 350;
+            const brightness = 1 - distanceFromCenter * 0.7;
+            
+            colors[i3] = 0.3 + brightness * 0.4;     // R
+            colors[i3 + 1] = 0.5 + brightness * 0.3; // G
+            colors[i3 + 2] = 0.9 + brightness * 0.1; // B
+        }
     }
     
     spiralGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
     spiralGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     
     const spiralMaterial = new THREE.PointsMaterial({
-        size: 2,
+        size: 3,
         vertexColors: true,
         transparent: true,
         opacity: 0.6,
-        blending: THREE.AdditiveBlending
+        blending: isMobile ? THREE.NormalBlending : THREE.AdditiveBlending, // Cheaper blending for mobile
+        sizeAttenuation: true
     });
     
     galaxySpiral = new THREE.Points(spiralGeometry, spiralMaterial);
-    galaxySpiral.position.set(200, 100, -300);
     scene.add(galaxySpiral);
 }
 
 function createCosmicDust() {
     const dustGeometry = new THREE.BufferGeometry();
-    const dustCount = 3000;
+    const dustCount = mobileConfig.dustCount; // Reduced for mobile
     const positions = new Float32Array(dustCount * 3);
     const colors = new Float32Array(dustCount * 3);
     
@@ -227,10 +325,17 @@ function createCosmicDust() {
         positions[i3 + 1] = (Math.random() - 0.5) * 1500;
         positions[i3 + 2] = (Math.random() - 0.5) * 1500;
         
-        // Cosmic dust colors (very subtle)
-        colors[i3] = 0.1 + Math.random() * 0.1;
-        colors[i3 + 1] = 0.1 + Math.random() * 0.2;
-        colors[i3 + 2] = 0.2 + Math.random() * 0.2;
+        // Simplified colors for mobile
+        if (isMobile) {
+            colors[i3] = 0.15;
+            colors[i3 + 1] = 0.2;
+            colors[i3 + 2] = 0.3;
+        } else {
+            // Cosmic dust colors (very subtle)
+            colors[i3] = 0.1 + Math.random() * 0.1;
+            colors[i3 + 1] = 0.1 + Math.random() * 0.2;
+            colors[i3 + 2] = 0.2 + Math.random() * 0.2;
+        }
     }
     
     dustGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
@@ -241,7 +346,7 @@ function createCosmicDust() {
         vertexColors: true,
         transparent: true,
         opacity: 0.4,
-        blending: THREE.AdditiveBlending
+        blending: isMobile ? THREE.NormalBlending : THREE.AdditiveBlending // Cheaper blending for mobile
     });
     
     cosmicDust = new THREE.Points(dustGeometry, dustMaterial);
@@ -249,7 +354,7 @@ function createCosmicDust() {
 }
 
 function createParticles() {
-    const particleCount = 800;
+    const particleCount = mobileConfig.maxParticles; // Reduced for mobile
     const particles = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
     const colors = new Float32Array(particleCount * 3);
@@ -269,12 +374,21 @@ function createParticles() {
         positions[i3 + 1] = (Math.random() - 0.5) * 2000;
         positions[i3 + 2] = (Math.random() - 0.5) * 1000;
         
-        // Velocities for floating motion
-        velocities.push({
-            x: (Math.random() - 0.5) * 0.5,
-            y: (Math.random() - 0.5) * 0.5,
-            z: (Math.random() - 0.5) * 0.3
-        });
+        // Simplified velocities for mobile
+        if (isMobile) {
+            velocities.push({
+                x: (Math.random() - 0.5) * 0.2,
+                y: (Math.random() - 0.5) * 0.2,
+                z: (Math.random() - 0.5) * 0.1
+            });
+        } else {
+            // Velocities for floating motion
+            velocities.push({
+                x: (Math.random() - 0.5) * 0.5,
+                y: (Math.random() - 0.5) * 0.5,
+                z: (Math.random() - 0.5) * 0.3
+            });
+        }
         
         // Colors
         const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
@@ -291,7 +405,7 @@ function createParticles() {
         vertexColors: true,
         transparent: true,
         opacity: 0.8,
-        blending: THREE.AdditiveBlending
+        blending: isMobile ? THREE.NormalBlending : THREE.AdditiveBlending // Cheaper blending for mobile
     });
     
     particleSystem = new THREE.Points(particles, particleMaterial);
@@ -1689,25 +1803,127 @@ const utils = {
 
 // Initialize everything when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Portfolio loaded successfully');
+    // Show mobile performance warning if needed
+    if (isOldIOS || (isMobile && navigator.hardwareConcurrency < 4)) {
+        console.warn('⚠️ Mobile device detected - some features may be disabled for optimal performance');
+        
+        // Show user notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            z-index: 10000;
+            max-width: 300px;
+            line-height: 1.4;
+        `;
+        notification.textContent = 'Some advanced features are disabled on mobile devices for optimal performance.';
+        document.body.appendChild(notification);
+        
+        // Auto-remove notification after 5 seconds
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+    }
     
-    // Initialize Three.js first
+    // Initialize loading manager
+    const loadingManager = new LoadingManager();
+    
+    // Initialize Three.js (with mobile optimization)
     initThree();
     
-    // Initialize all components
-    const loadingManager = new LoadingManager();
+    // Initialize scroll animations
     const scrollAnimations = new ScrollAnimations();
-    const navigation = new Navigation();
-    const interactiveElements = new InteractiveElements();
-    const contactForm = new ContactForm();
-    const pokemonCarousel = new PokemonCardsCarousel();
-    const timelineHeadscan = new TimelineHeadScanViewer();
     
-    // Initialize premium project sections
+    // Initialize navigation
+    const navigation = new Navigation();
+    
+    // Initialize contact form
+    const contactForm = new ContactForm();
+    
+    // Initialize interactive elements
+    const interactiveElements = new InteractiveElements();
+    
+    // Initialize performance monitor
+    const performanceMonitor = new PerformanceMonitor();
+    
+    // Initialize Pokémon cards carousel
+    const pokemonCarousel = new PokemonCardsCarousel();
+    
+    // Initialize timeline head scan viewer (simplified on mobile)
+    if (!isOldIOS) {
+        const timelineViewer = new TimelineHeadScanViewer();
+    }
+    
+    // Initialize premium project sections (with mobile optimization)
     initializePremiumProjects();
     
-    // Start the loading sequence
-    loadingManager.init();
+    // Initialize premium Three.js backgrounds
+    initializePremiumThreeJSBackgrounds();
+    
+    // Handle window resize
+    window.addEventListener('resize', onWindowResize);
+    window.addEventListener('mousemove', onDocumentMouseMove);
+    
+    // Add custom CSS for enhanced effects
+    const style = document.createElement('style');
+    style.textContent = `
+        .cyber-glow {
+            text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff;
+            animation: cyberPulse 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes cyberPulse {
+            0% { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 60px #00ffff; }
+            100% { text-shadow: 0 0 30px #00ffff, 0 0 60px #00ffff, 0 0 90px #00ffff; }
+        }
+        
+        .floating-tech {
+            animation: floatTech 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes floatTech {
+            0% { transform: translateY(0px) rotateX(0deg); }
+            100% { transform: translateY(-20px) rotateX(5deg); }
+        }
+        
+        .matrix-effect {
+            background: linear-gradient(90deg, transparent, rgba(0,255,255,0.1), transparent);
+            animation: matrixSweep 3s linear infinite;
+        }
+        
+        @keyframes matrixSweep {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Mobile-specific optimizations */
+        @media (max-width: 768px) {
+            .cyber-glow {
+                text-shadow: 0 0 10px #00ffff;
+                animation: none;
+            }
+            
+            .floating-tech {
+                animation: none;
+            }
+            
+            .matrix-effect {
+                animation: none;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    console.log(isMobile ? 
+        '📱 Mobile-Optimized Portfolio Initialized' : 
+        '🚀 Enhanced Portfolio Initialized'
+    );
 });
 
 // Pokemon Cards Carousel
@@ -2211,346 +2427,588 @@ class TimelineHeadScanViewer {
     }
 }
 
-// Premium Project Sections Interactive Elements
+// Premium Project Sections Interactive Elements - Complete Overhaul with Mobile Optimization
 function initializePremiumProjects() {
-    // Initialize 3D Drone Viewport
+    // Skip complex premium features on very old devices
+    if (isOldIOS && navigator.hardwareConcurrency < 4) {
+        console.warn('Skipping premium features on low-performance device');
+        return;
+    }
+    
+    // Initialize Advanced 3D Drone Viewport (simplified on mobile)
     const droneViewport = document.getElementById('drone-3d-viewport');
     if (droneViewport) {
-        initDroneViewport(droneViewport);
+        initAdvancedDroneViewport(droneViewport);
     }
     
-    // Initialize Podcast Visualizer
+    // Initialize Advanced Audio Visualizer (simplified on mobile)
     const podcastVisualizer = document.getElementById('podcast-visualizer');
     if (podcastVisualizer) {
-        initPodcastVisualizer(podcastVisualizer);
+        initAdvancedAudioVisualizer(podcastVisualizer);
     }
     
-    // Initialize floating card animations
-    initFloatingCards();
+    // Initialize Premium Card Animations
+    initPremiumCardAnimations();
     
-    // Initialize floating geometric elements
-    initFloatingGeometry();
+    // Initialize Neural Network Background (only on desktop)
+    if (mobileConfig.enableNeuralBackground) {
+        initNeuralNetworkBackground();
+    }
+    
+    // Initialize Audio Wave Background (only on desktop)
+    if (mobileConfig.enableAudioBackground) {
+        initAudioWaveBackground();
+    }
 }
 
-function initDroneViewport(viewport) {
-    // Create 3D geometric shape
-    const shape = document.createElement('div');
-    shape.className = 'drone-3d-shape';
-    shape.style.cssText = `
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 120px;
-        height: 120px;
-        transform: translate(-50%, -50%);
-        transform-style: preserve-3d;
-        animation: droneFloat 8s ease-in-out infinite;
-    `;
+// Advanced 3D Drone Viewport with Neural Network Visualization
+function initAdvancedDroneViewport(container) {
+    const loadingElement = container.querySelector('.viewport-loading');
+    const controls = container.querySelector('.viewport-controls');
     
-    // Create cube faces
-    const faces = ['front', 'back', 'right', 'left', 'top', 'bottom'];
-    faces.forEach((face, index) => {
-        const faceElement = document.createElement('div');
-        faceElement.className = `drone-face drone-face-${face}`;
-        faceElement.style.cssText = `
-            position: absolute;
-            width: 120px;
-            height: 120px;
-            background: linear-gradient(45deg, 
-                rgba(99, 102, 241, 0.1), 
-                rgba(6, 182, 212, 0.1));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        `;
+    // Create Three.js scene with mobile optimization
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ 
+        alpha: true, 
+        antialias: mobileConfig.antialias,
+        powerPreference: isMobile ? "low-power" : "high-performance"
+    });
+    
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(mobileConfig.pixelRatio);
+    
+    // Only enable shadows on desktop
+    if (mobileConfig.enableShadows) {
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap; // Cheaper than PCFSoft
+    }
+    
+    // Disable expensive post-processing on mobile
+    if (!isMobile) {
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.2;
+    }
+    
+    // Optimized lighting setup
+    const ambientLight = new THREE.AmbientLight(0x404040, isMobile ? 0.8 : 0.4);
+    scene.add(ambientLight);
+    
+    if (mobileConfig.enableAdvancedLighting) {
+        // Desktop lighting
+        const directionalLight = new THREE.DirectionalLight(0x6366f1, 1);
+        directionalLight.position.set(5, 5, 5);
         
-        // Position faces
-        switch(face) {
-            case 'front':
-                faceElement.style.transform = 'rotateY(0deg) translateZ(60px)';
+        if (mobileConfig.enableShadows) {
+            directionalLight.castShadow = true;
+            directionalLight.shadow.mapSize.width = mobileConfig.shadowMapSize;
+            directionalLight.shadow.mapSize.height = mobileConfig.shadowMapSize;
+        }
+        scene.add(directionalLight);
+        
+        const pointLight1 = new THREE.PointLight(0x06b6d4, 0.8, 100);
+        pointLight1.position.set(-10, 10, 10);
+        scene.add(pointLight1);
+        
+        const pointLight2 = new THREE.PointLight(0x8b5cf6, 0.6, 100);
+        pointLight2.position.set(10, -10, -10);
+        scene.add(pointLight2);
+    } else {
+        // Mobile lighting - single directional light
+        const directionalLight = new THREE.DirectionalLight(0x6366f1, 1.2);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+    }
+    
+    // Create neural network visualization with mobile optimization
+    const neuralGroup = new THREE.Group();
+    
+    // Create nodes
+    const nodeGeometry = new THREE.SphereGeometry(0.1, isMobile ? 8 : 16, isMobile ? 8 : 16);
+    const nodeMaterial = isMobile ? 
+        new THREE.MeshBasicMaterial({ color: 0x6366f1 }) : // Simple material for mobile
+        new THREE.MeshStandardMaterial({
+            color: 0x6366f1,
+            emissive: 0x6366f1,
+            emissiveIntensity: 0.2,
+            metalness: 0.1,
+            roughness: 0.1
+        });
+    
+    const nodes = [];
+    const layers = isMobile ? [4, 6, 8, 6, 4] : [8, 12, 16, 12, 8]; // Reduced neural network architecture for mobile
+    
+    layers.forEach((nodeCount, layerIndex) => {
+        for (let i = 0; i < nodeCount; i++) {
+            const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
+            const angle = (i / nodeCount) * Math.PI * 2;
+            const radius = 2 + layerIndex * 0.5;
+            node.position.set(
+                Math.cos(angle) * radius,
+                (i - nodeCount / 2) * 0.3,
+                layerIndex * 2 - 4
+            );
+            node.userData = { layer: layerIndex, index: i };
+            nodes.push(node);
+            neuralGroup.add(node);
+        }
+    });
+    
+    // Create connections
+    const connectionMaterial = new THREE.LineBasicMaterial({
+        color: 0x06b6d4,
+        opacity: 0.3,
+        transparent: true
+    });
+    
+    for (let i = 0; i < layers.length - 1; i++) {
+        const currentLayerStart = layers.slice(0, i).reduce((sum, count) => sum + count, 0);
+        const nextLayerStart = layers.slice(0, i + 1).reduce((sum, count) => sum + count, 0);
+        
+        for (let j = 0; j < layers[i]; j++) {
+            for (let k = 0; k < layers[i + 1]; k++) {
+                const points = [
+                    nodes[currentLayerStart + j].position,
+                    nodes[nextLayerStart + k].position
+                ];
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const line = new THREE.Line(geometry, connectionMaterial);
+                neuralGroup.add(line);
+            }
+        }
+    }
+    
+    // Add advanced geometric elements
+    const geometryGroup = new THREE.Group();
+    
+    // Create Gaussian splat visualization with mobile optimization
+    const splatGeometry = new THREE.IcosahedronGeometry(0.5, isMobile ? 1 : 2);
+    const splatMaterial = isMobile ?
+        new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.6 }) : // Simple material for mobile
+        new THREE.MeshStandardMaterial({
+            color: 0x3b82f6,
+            transparent: true,
+            opacity: 0.6,
+            emissive: 0x3b82f6,
+            emissiveIntensity: 0.1
+        });
+    
+    for (let i = 0; i < mobileConfig.gaussianSplats; i++) {
+        const splat = new THREE.Mesh(splatGeometry, splatMaterial.clone());
+        splat.position.set(
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10,
+            (Math.random() - 0.5) * 10
+        );
+        splat.scale.setScalar(Math.random() * 0.5 + 0.5);
+        splat.userData = { 
+            originalPosition: splat.position.clone(),
+            rotationSpeed: Math.random() * 0.02 + 0.01
+        };
+        geometryGroup.add(splat);
+    }
+    
+    scene.add(neuralGroup);
+    scene.add(geometryGroup);
+    
+    camera.position.z = 8;
+    
+    // Animation variables
+    let neuralRotation = 0;
+    let gaussianFocus = false;
+    let depthAnalysis = false;
+    let animationId;
+    
+    // Animation loop with mobile optimization
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        
+        // Update neural network
+        neuralRotation += isMobile ? 0.002 : 0.005; // Slower rotation on mobile
+        neuralGroup.rotation.y = neuralRotation;
+        
+        // Pulse nodes (simplified on mobile)
+        if (!isMobile) {
+            nodes.forEach((node, index) => {
+                const time = Date.now() * 0.001;
+                const pulseIntensity = Math.sin(time * 2 + index * 0.1) * 0.1 + 0.2;
+                if (node.material.emissiveIntensity !== undefined) {
+                    node.material.emissiveIntensity = pulseIntensity;
+                }
+                node.scale.setScalar(1 + pulseIntensity * 0.5);
+            });
+        }
+        
+        // Update Gaussian splats (simplified on mobile)
+        geometryGroup.children.forEach((splat, index) => {
+            if (splat.userData && splat.userData.rotationSpeed) {
+                const rotationSpeed = isMobile ? splat.userData.rotationSpeed * 0.5 : splat.userData.rotationSpeed;
+                splat.rotation.x += rotationSpeed;
+                splat.rotation.y += rotationSpeed * 0.7;
+                
+                if (!isMobile) {
+                    if (gaussianFocus) {
+                        const targetScale = 1.5;
+                        splat.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.02);
+                    } else {
+                        const originalScale = 0.5 + Math.sin(Date.now() * 0.001 + index) * 0.2;
+                        splat.scale.lerp(new THREE.Vector3(originalScale, originalScale, originalScale), 0.02);
+                    }
+                }
+            }
+        });
+        
+        // Depth analysis effect (disabled on mobile)
+        if (!isMobile && depthAnalysis) {
+            camera.position.z = 8 + Math.sin(Date.now() * 0.002) * 2;
+        }
+        
+        renderer.render(scene, camera);
+    }
+    
+    // Add renderer to container
+    container.appendChild(renderer.domElement);
+    
+    // Hide loading screen
+    setTimeout(() => {
+        loadingElement.style.display = 'none';
+        animate();
+    }, 1500);
+    
+    // Handle controls
+    controls.addEventListener('click', (e) => {
+        const action = e.target.dataset.action || e.target.closest('[data-action]')?.dataset.action;
+        
+        switch (action) {
+            case 'neural-rotate':
+                neuralGroup.rotation.y += Math.PI * 2;
                 break;
-            case 'back':
-                faceElement.style.transform = 'rotateY(180deg) translateZ(60px)';
+            case 'gaussian-focus':
+                gaussianFocus = !gaussianFocus;
                 break;
-            case 'right':
-                faceElement.style.transform = 'rotateY(90deg) translateZ(60px)';
+            case 'depth-analysis':
+                depthAnalysis = !depthAnalysis;
                 break;
-            case 'left':
-                faceElement.style.transform = 'rotateY(-90deg) translateZ(60px)';
+            case 'reset-view':
+                camera.position.set(0, 0, 8);
+                neuralGroup.rotation.set(0, 0, 0);
+                gaussianFocus = false;
+                depthAnalysis = false;
                 break;
-            case 'top':
-                faceElement.style.transform = 'rotateX(90deg) translateZ(60px)';
+        }
+    });
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    
+    // Cleanup
+    return () => {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        renderer.dispose();
+    };
+}
+
+// Advanced Audio Visualizer with Neural Processing
+function initAdvancedAudioVisualizer(container) {
+    const loadingElement = container.querySelector('.visualizer-loading');
+    const controls = container.querySelector('.visualizer-controls');
+    
+    // Create Three.js scene with mobile optimization
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ 
+        alpha: true, 
+        antialias: mobileConfig.antialias,
+        powerPreference: isMobile ? "low-power" : "high-performance"
+    });
+    
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(mobileConfig.pixelRatio);
+    
+    // Only enable shadows on desktop
+    if (mobileConfig.enableShadows) {
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFShadowMap; // Cheaper than PCFSoft
+    }
+    
+    // Optimized lighting for audio visualization
+    const ambientLight = new THREE.AmbientLight(0x2d1b4e, isMobile ? 0.6 : 0.3);
+    scene.add(ambientLight);
+    
+    if (mobileConfig.enableAdvancedLighting) {
+        // Desktop lighting
+        const directionalLight = new THREE.DirectionalLight(0x9333ea, 1);
+        directionalLight.position.set(3, 3, 3);
+        scene.add(directionalLight);
+        
+        const pointLight1 = new THREE.PointLight(0xec4899, 0.8, 50);
+        pointLight1.position.set(-5, 5, 5);
+        scene.add(pointLight1);
+        
+        const pointLight2 = new THREE.PointLight(0xa855f7, 0.6, 50);
+        pointLight2.position.set(5, -5, -5);
+        scene.add(pointLight2);
+    } else {
+        // Mobile lighting - single directional light
+        const directionalLight = new THREE.DirectionalLight(0x9333ea, 1.5);
+        directionalLight.position.set(3, 3, 3);
+        scene.add(directionalLight);
+    }
+    
+    // Create visualization elements
+    const visualizationGroup = new THREE.Group();
+    let currentMode = 'spectrum';
+    let animationId;
+    
+    // Spectrum visualization
+    function createSpectrumVisualization() {
+        const group = new THREE.Group();
+        const barGeometry = new THREE.BoxGeometry(0.1, 1, 0.1);
+        const barMaterial = new THREE.MeshStandardMaterial({
+            color: 0x9333ea,
+            emissive: 0x9333ea,
+            emissiveIntensity: 0.3
+        });
+        
+        const bars = [];
+        for (let i = 0; i < 64; i++) {
+            const bar = new THREE.Mesh(barGeometry, barMaterial.clone());
+            const angle = (i / 64) * Math.PI * 2;
+            const radius = 3;
+            bar.position.set(
+                Math.cos(angle) * radius,
+                0,
+                Math.sin(angle) * radius
+            );
+            bar.userData = { baseHeight: 1, index: i };
+            bars.push(bar);
+            group.add(bar);
+        }
+        
+        group.userData = { bars, type: 'spectrum' };
+        return group;
+    }
+    
+    // Waveform visualization
+    function createWaveformVisualization() {
+        const group = new THREE.Group();
+        const waveGeometry = new THREE.SphereGeometry(0.05, 8, 8);
+        const waveMaterial = new THREE.MeshStandardMaterial({
+            color: 0xec4899,
+            emissive: 0xec4899,
+            emissiveIntensity: 0.4
+        });
+        
+        const wavePoints = [];
+        for (let i = 0; i < 128; i++) {
+            const point = new THREE.Mesh(waveGeometry, waveMaterial.clone());
+            point.position.set(
+                (i - 64) * 0.1,
+                0,
+                0
+            );
+            point.userData = { baseY: 0, index: i };
+            wavePoints.push(point);
+            group.add(point);
+        }
+        
+        group.userData = { wavePoints, type: 'waveform' };
+        return group;
+    }
+    
+    // Circular visualization
+    function createCircularVisualization() {
+        const group = new THREE.Group();
+        
+        // Create concentric rings
+        for (let ring = 0; ring < 5; ring++) {
+            const ringGeometry = new THREE.TorusGeometry(1 + ring * 0.8, 0.02, 8, 32);
+            const ringMaterial = new THREE.MeshStandardMaterial({
+                color: new THREE.Color().setHSL(0.8 - ring * 0.1, 0.8, 0.6),
+                emissive: new THREE.Color().setHSL(0.8 - ring * 0.1, 0.8, 0.3),
+                emissiveIntensity: 0.2
+            });
+            
+            const ringMesh = new THREE.Mesh(ringGeometry, ringMaterial);
+            ringMesh.userData = { ring, baseScale: 1 };
+            group.add(ringMesh);
+        }
+        
+        group.userData = { type: 'circular' };
+        return group;
+    }
+    
+    // Neural visualization
+    function createNeuralVisualization() {
+        const group = new THREE.Group();
+        
+        // Create neural network structure
+        const nodeGeometry = new THREE.SphereGeometry(0.08, 12, 12);
+        const nodeMaterial = new THREE.MeshStandardMaterial({
+            color: 0xa855f7,
+            emissive: 0xa855f7,
+            emissiveIntensity: 0.3
+        });
+        
+        const nodes = [];
+        const layers = [6, 10, 14, 10, 6];
+        
+        layers.forEach((nodeCount, layerIndex) => {
+            for (let i = 0; i < nodeCount; i++) {
+                const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
+                const angle = (i / nodeCount) * Math.PI * 2;
+                const radius = 1.5 + layerIndex * 0.3;
+                node.position.set(
+                    Math.cos(angle) * radius,
+                    (i - nodeCount / 2) * 0.2,
+                    layerIndex * 1.5 - 3
+                );
+                node.userData = { layer: layerIndex, index: i };
+                nodes.push(node);
+                group.add(node);
+            }
+        });
+        
+        group.userData = { nodes, type: 'neural' };
+        return group;
+    }
+    
+    // Initialize with spectrum mode
+    let currentVisualization = createSpectrumVisualization();
+    visualizationGroup.add(currentVisualization);
+    scene.add(visualizationGroup);
+    
+    camera.position.z = 8;
+    
+    // Animation loop
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        
+        const time = Date.now() * 0.001;
+        
+        // Update visualization based on mode
+        if (currentVisualization.userData.type === 'spectrum') {
+            currentVisualization.userData.bars.forEach((bar, index) => {
+                const frequency = Math.sin(time * 2 + index * 0.2) * 0.5 + 0.5;
+                bar.scale.y = 0.2 + frequency * 2;
+                bar.material.emissiveIntensity = 0.1 + frequency * 0.5;
+            });
+        } else if (currentVisualization.userData.type === 'waveform') {
+            currentVisualization.userData.wavePoints.forEach((point, index) => {
+                const wave = Math.sin(time * 3 + index * 0.1) * 2;
+                point.position.y = wave;
+                point.material.emissiveIntensity = 0.2 + Math.abs(wave) * 0.3;
+            });
+        } else if (currentVisualization.userData.type === 'circular') {
+            currentVisualization.children.forEach((ring, index) => {
+                const pulse = Math.sin(time * (2 + index * 0.5)) * 0.3 + 1;
+                ring.scale.setScalar(pulse);
+                ring.material.emissiveIntensity = 0.1 + pulse * 0.2;
+                ring.rotation.z += 0.01 * (index + 1);
+            });
+        } else if (currentVisualization.userData.type === 'neural') {
+            currentVisualization.userData.nodes.forEach((node, index) => {
+                const activation = Math.sin(time * 1.5 + index * 0.3) * 0.5 + 0.5;
+                node.material.emissiveIntensity = 0.1 + activation * 0.4;
+                node.scale.setScalar(0.8 + activation * 0.4);
+            });
+        }
+        
+        // Global rotation
+        visualizationGroup.rotation.y += 0.003;
+        
+        renderer.render(scene, camera);
+    }
+    
+    // Add renderer to container
+    container.appendChild(renderer.domElement);
+    
+    // Hide loading screen
+    setTimeout(() => {
+        loadingElement.style.display = 'none';
+        animate();
+    }, 1200);
+    
+    // Handle mode switching
+    function switchMode(mode) {
+        if (mode === currentMode) return;
+        
+        currentMode = mode;
+        
+        // Remove current visualization
+        visualizationGroup.remove(currentVisualization);
+        
+        // Create new visualization
+        switch (mode) {
+            case 'spectrum':
+                currentVisualization = createSpectrumVisualization();
                 break;
-            case 'bottom':
-                faceElement.style.transform = 'rotateX(-90deg) translateZ(60px)';
+            case 'waveform':
+                currentVisualization = createWaveformVisualization();
+                break;
+            case 'circular':
+                currentVisualization = createCircularVisualization();
+                break;
+            case 'neural':
+                currentVisualization = createNeuralVisualization();
                 break;
         }
         
-        shape.appendChild(faceElement);
-    });
-    
-    viewport.appendChild(shape);
-    
-    // Add control handlers
-    const controls = viewport.querySelectorAll('.control-btn');
-    controls.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const action = e.target.dataset.action;
-            handleDroneViewportAction(action, shape);
-        });
-    });
-    
-    // Add CSS animations
-    if (!document.querySelector('#drone-animations')) {
-        const style = document.createElement('style');
-        style.id = 'drone-animations';
-        style.textContent = `
-            @keyframes droneFloat {
-                0%, 100% { 
-                    transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
-                }
-                25% { 
-                    transform: translate(-50%, -50%) rotateX(15deg) rotateY(90deg) rotateZ(5deg);
-                }
-                50% { 
-                    transform: translate(-50%, -50%) rotateX(0deg) rotateY(180deg) rotateZ(0deg);
-                }
-                75% { 
-                    transform: translate(-50%, -50%) rotateX(-15deg) rotateY(270deg) rotateZ(-5deg);
-                }
-            }
-            @keyframes droneRotate {
-                0% { transform: translate(-50%, -50%) rotateY(0deg); }
-                100% { transform: translate(-50%, -50%) rotateY(720deg); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-function handleDroneViewportAction(action, shape) {
-    switch(action) {
-        case 'rotate':
-            shape.style.animation = 'droneRotate 2s ease-in-out';
-            setTimeout(() => {
-                shape.style.animation = 'droneFloat 8s ease-in-out infinite';
-            }, 2000);
-            break;
-        case 'zoom':
-            shape.style.transform = 'translate(-50%, -50%) scale(1.5)';
-            setTimeout(() => {
-                shape.style.transform = 'translate(-50%, -50%) scale(1)';
-            }, 1000);
-            break;
-        case 'reset':
-            shape.style.animation = 'none';
-            shape.style.transform = 'translate(-50%, -50%)';
-            setTimeout(() => {
-                shape.style.animation = 'droneFloat 8s ease-in-out infinite';
-            }, 100);
-            break;
-    }
-}
-
-function initPodcastVisualizer(visualizer) {
-    const visualizationArea = visualizer.querySelector('.visualization-area');
-    if (!visualizationArea) return;
-    
-    // Create initial waveform
-    createWaveformVisualization(visualizationArea);
-    
-    // Add control handlers
-    const controls = visualizer.querySelectorAll('.viz-btn');
-    controls.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const mode = e.target.dataset.mode;
-            handleVisualizerMode(mode, visualizationArea);
-            
-            // Update active button
-            controls.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-        });
-    });
-    
-    // Set initial active button
-    const waveformBtn = visualizer.querySelector('[data-mode="waveform"]');
-    if (waveformBtn) waveformBtn.classList.add('active');
-}
-
-function createWaveformVisualization(container) {
-    const waveform = document.createElement('div');
-    waveform.className = 'podcast-waveform';
-    waveform.style.cssText = `
-        position: absolute;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: end;
-        gap: 3px;
-        height: 80px;
-    `;
-    
-    // Create waveform bars
-    for (let i = 0; i < 40; i++) {
-        const bar = document.createElement('div');
-        bar.className = 'waveform-bar';
-        bar.style.cssText = `
-            width: 4px;
-            background: linear-gradient(to top, 
-                rgba(147, 51, 234, 0.8), 
-                rgba(236, 72, 153, 0.6));
-            border-radius: 2px;
-            animation: waveformPulse ${0.5 + Math.random() * 1}s ease-in-out infinite alternate;
-            animation-delay: ${i * 0.05}s;
-            height: ${20 + Math.random() * 60}px;
-        `;
-        waveform.appendChild(bar);
-    }
-    
-    container.appendChild(waveform);
-    
-    // Add waveform animation
-    if (!document.querySelector('#waveform-animations')) {
-        const style = document.createElement('style');
-        style.id = 'waveform-animations';
-        style.textContent = `
-            @keyframes waveformPulse {
-                0% { transform: scaleY(0.3); opacity: 0.6; }
-                100% { transform: scaleY(1); opacity: 1; }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-function createFrequencyVisualization(container) {
-    const frequency = document.createElement('div');
-    frequency.className = 'podcast-frequency';
-    frequency.style.cssText = `
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 200px;
-        height: 200px;
-        border: 2px solid rgba(147, 51, 234, 0.3);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    `;
-    
-    // Create frequency rings
-    for (let i = 0; i < 5; i++) {
-        const ring = document.createElement('div');
-        ring.style.cssText = `
-            position: absolute;
-            border: 1px solid rgba(236, 72, 153, ${0.2 + i * 0.1});
-            border-radius: 50%;
-            width: ${40 + i * 30}px;
-            height: ${40 + i * 30}px;
-            animation: frequencyPulse ${1 + i * 0.3}s ease-in-out infinite;
-            animation-delay: ${i * 0.2}s;
-        `;
-        frequency.appendChild(ring);
-    }
-    
-    container.appendChild(frequency);
-    
-    // Add frequency animation
-    if (!document.querySelector('#frequency-animations')) {
-        const style = document.createElement('style');
-        style.id = 'frequency-animations';
-        style.textContent = `
-            @keyframes frequencyPulse {
-                0%, 100% { 
-                    transform: scale(1); 
-                    opacity: 0.6; 
-                }
-                50% { 
-                    transform: scale(1.2); 
-                    opacity: 1; 
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-function create3DSpectrumVisualization(container) {
-    const spectrum = document.createElement('div');
-    spectrum.className = 'podcast-3d-spectrum';
-    spectrum.style.cssText = `
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        transform-style: preserve-3d;
-        animation: spectrum3DRotate 10s linear infinite;
-    `;
-    
-    // Create 3D spectrum bars
-    for (let i = 0; i < 20; i++) {
-        const bar = document.createElement('div');
-        bar.style.cssText = `
-            position: absolute;
-            width: 8px;
-            height: ${20 + Math.random() * 80}px;
-            background: linear-gradient(to top, 
-                rgba(147, 51, 234, 0.8), 
-                rgba(236, 72, 153, 0.8));
-            transform: rotateY(${i * 18}deg) translateZ(60px);
-            animation: spectrumBarPulse ${0.5 + Math.random() * 1}s ease-in-out infinite alternate;
-            animation-delay: ${i * 0.1}s;
-        `;
-        spectrum.appendChild(bar);
-    }
-    
-    container.appendChild(spectrum);
-    
-    // Add 3D spectrum animations
-    if (!document.querySelector('#spectrum-animations')) {
-        const style = document.createElement('style');
-        style.id = 'spectrum-animations';
-        style.textContent = `
-            @keyframes spectrum3DRotate {
-                0% { transform: translate(-50%, -50%) rotateY(0deg); }
-                100% { transform: translate(-50%, -50%) rotateY(360deg); }
-            }
-            @keyframes spectrumBarPulse {
-                0% { transform: rotateY(var(--rotation, 0deg)) translateZ(60px) scaleY(0.3); }
-                100% { transform: rotateY(var(--rotation, 0deg)) translateZ(60px) scaleY(1); }
-            }
-        `;
-        document.head.appendChild(style);
-    }
-}
-
-function handleVisualizerMode(mode, visualizationArea) {
-    // Remove existing visualizations
-    const existing = visualizationArea.querySelectorAll('.podcast-waveform, .podcast-frequency, .podcast-3d-spectrum');
-    existing.forEach(el => el.remove());
-    
-    switch(mode) {
-        case 'waveform':
-            createWaveformVisualization(visualizationArea);
-            break;
-        case 'frequency':
-            createFrequencyVisualization(visualizationArea);
-            break;
-        case '3d':
-            create3DSpectrumVisualization(visualizationArea);
-            break;
-    }
-}
-
-function initFloatingCards() {
-    const cards = document.querySelectorAll('.floating-card');
-    cards.forEach((card, index) => {
-        // Stagger animation delays
-        card.style.animationDelay = `${index * 0.2}s`;
+        visualizationGroup.add(currentVisualization);
         
-        // Add enhanced mouse tracking
+        // Update active button
+        controls.querySelectorAll('.control-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        controls.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+    }
+    
+    // Handle controls
+    controls.addEventListener('click', (e) => {
+        const mode = e.target.dataset.mode || e.target.closest('[data-mode]')?.dataset.mode;
+        if (mode) {
+            switchMode(mode);
+        }
+    });
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    
+    // Cleanup
+    return () => {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        renderer.dispose();
+    };
+}
+
+// Premium Card Animations
+function initPremiumCardAnimations() {
+    const cards = document.querySelectorAll('.floating-card');
+    
+    cards.forEach((card, index) => {
+        // Add entrance animation
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(50px)';
+        
+        setTimeout(() => {
+            card.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+        }, 200 * index);
+        
+        // Add hover tracking
         card.addEventListener('mousemove', (e) => {
             const rect = card.getBoundingClientRect();
             const x = e.clientX - rect.left;
@@ -2559,73 +3017,545 @@ function initFloatingCards() {
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
             
-            const rotateX = ((y - centerY) / centerY) * -10;
-            const rotateY = ((x - centerX) / centerX) * 10;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
             
-            card.style.transform = `
-                translateY(-20px) 
-                rotateX(${rotateX}deg) 
-                rotateY(${rotateY}deg)
-                perspective(1000px)
-            `;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(20px)`;
         });
         
         card.addEventListener('mouseleave', () => {
-            card.style.transform = '';
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
         });
     });
 }
 
-function initFloatingGeometry() {
-    const sections = document.querySelectorAll('.premium-project-section');
-    sections.forEach(section => {
-        for (let i = 0; i < 3; i++) {
-            const geometry = document.createElement('div');
-            geometry.className = 'floating-geometry';
-            geometry.style.cssText = `
-                position: absolute;
-                width: ${20 + Math.random() * 40}px;
-                height: ${20 + Math.random() * 40}px;
-                background: linear-gradient(45deg, 
-                    rgba(255, 255, 255, 0.03), 
-                    rgba(255, 255, 255, 0.08));
-                border-radius: ${Math.random() > 0.5 ? '50%' : '20%'};
-                top: ${Math.random() * 80}%;
-                left: ${Math.random() * 80}%;
-                animation: floatingGeometry ${10 + Math.random() * 10}s ease-in-out infinite;
-                animation-delay: ${Math.random() * 5}s;
-                pointer-events: none;
-                z-index: 1;
-            `;
-            
-            section.appendChild(geometry);
-        }
-    });
+// Neural Network Background Animation
+function initNeuralNetworkBackground() {
+    const droneSection = document.querySelector('.drone-project');
+    if (!droneSection) return;
     
-    // Add floating geometry animation
-    if (!document.querySelector('#floating-geometry-animations')) {
-        const style = document.createElement('style');
-        style.id = 'floating-geometry-animations';
-        style.textContent = `
-            @keyframes floatingGeometry {
-                0%, 100% { 
-                    transform: translate(0, 0) rotate(0deg) scale(1);
-                    opacity: 0.3;
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '2';
+    canvas.style.opacity = '0.3';
+    
+    const background = droneSection.querySelector('.neural-network-bg');
+    background.appendChild(canvas);
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    function resizeCanvas() {
+        canvas.width = droneSection.clientWidth;
+        canvas.height = droneSection.clientHeight;
+    }
+    
+    resizeCanvas();
+    
+    // Neural network nodes
+    const nodes = [];
+    const connections = [];
+    
+    for (let i = 0; i < 50; i++) {
+        nodes.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            vx: (Math.random() - 0.5) * 0.5,
+            vy: (Math.random() - 0.5) * 0.5,
+            radius: Math.random() * 3 + 1,
+            opacity: Math.random() * 0.8 + 0.2
+        });
+    }
+    
+    function updateNodes() {
+        nodes.forEach(node => {
+            node.x += node.vx;
+            node.y += node.vy;
+            
+            if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+            if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+            
+            node.opacity = 0.2 + Math.sin(Date.now() * 0.001 + node.x * 0.01) * 0.3;
+        });
+    }
+    
+    function drawNodes() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Draw connections
+        ctx.strokeStyle = 'rgba(99, 102, 241, 0.1)';
+        ctx.lineWidth = 1;
+        
+        nodes.forEach((node, i) => {
+            nodes.slice(i + 1).forEach(otherNode => {
+                const dx = node.x - otherNode.x;
+                const dy = node.y - otherNode.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 100) {
+                    ctx.beginPath();
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(otherNode.x, otherNode.y);
+                    ctx.stroke();
                 }
-                25% { 
-                    transform: translate(30px, -20px) rotate(90deg) scale(1.1);
-                    opacity: 0.6;
-                }
-                50% { 
-                    transform: translate(-20px, -40px) rotate(180deg) scale(0.9);
-                    opacity: 0.4;
-                }
-                75% { 
-                    transform: translate(-30px, 20px) rotate(270deg) scale(1.05);
-                    opacity: 0.5;
+            });
+        });
+        
+        // Draw nodes
+        nodes.forEach(node => {
+            ctx.beginPath();
+            ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(99, 102, 241, ${node.opacity})`;
+            ctx.fill();
+        });
+    }
+    
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        updateNodes();
+        drawNodes();
+    }
+    
+    animate();
+    
+    window.addEventListener('resize', resizeCanvas);
+    
+    return () => {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        window.removeEventListener('resize', resizeCanvas);
+    };
+}
+
+// Audio Wave Background Animation
+function initAudioWaveBackground() {
+    const podcastSection = document.querySelector('.podcast-project');
+    if (!podcastSection) return;
+    
+    const canvas = document.createElement('canvas');
+    canvas.style.position = 'absolute';
+    canvas.style.top = '0';
+    canvas.style.left = '0';
+    canvas.style.width = '100%';
+    canvas.style.height = '100%';
+    canvas.style.pointerEvents = 'none';
+    canvas.style.zIndex = '2';
+    canvas.style.opacity = '0.4';
+    
+    const background = podcastSection.querySelector('.audio-wave-bg');
+    background.appendChild(canvas);
+    
+    const ctx = canvas.getContext('2d');
+    let animationId;
+    
+    function resizeCanvas() {
+        canvas.width = podcastSection.clientWidth;
+        canvas.height = podcastSection.clientHeight;
+    }
+    
+    resizeCanvas();
+    
+    // Audio wave parameters
+    const waves = [];
+    for (let i = 0; i < 5; i++) {
+        waves.push({
+            amplitude: Math.random() * 50 + 20,
+            frequency: Math.random() * 0.02 + 0.01,
+            phase: Math.random() * Math.PI * 2,
+            speed: Math.random() * 0.02 + 0.01,
+            color: `hsl(${280 + i * 10}, 70%, 60%)`,
+            opacity: 0.3 - i * 0.05
+        });
+    }
+    
+    function drawWaves() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        const time = Date.now() * 0.001;
+        
+        waves.forEach(wave => {
+            ctx.beginPath();
+            ctx.strokeStyle = wave.color;
+            ctx.globalAlpha = wave.opacity;
+            ctx.lineWidth = 2;
+            
+            for (let x = 0; x < canvas.width; x += 2) {
+                const y = canvas.height / 2 + 
+                    Math.sin(x * wave.frequency + time * wave.speed + wave.phase) * wave.amplitude;
+                
+                if (x === 0) {
+                    ctx.moveTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
                 }
             }
-        `;
-        document.head.appendChild(style);
+            
+            ctx.stroke();
+        });
+        
+        ctx.globalAlpha = 1;
     }
-} 
+    
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        drawWaves();
+    }
+    
+    animate();
+    
+    window.addEventListener('resize', resizeCanvas);
+    
+    return () => {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        window.removeEventListener('resize', resizeCanvas);
+    };
+}
+
+// Premium Three.js Backgrounds
+function initializePremiumThreeJSBackgrounds() {
+    initDroneProjectBackground();
+    initPodcastProjectBackground();
+}
+
+function initDroneProjectBackground() {
+    const container = document.getElementById('drone-threejs-bg');
+    if (!container) return;
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+    
+    // Neural network nodes
+    const nodeGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const nodeMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0x6366f1, 
+        transparent: true,
+        opacity: 0.8
+    });
+    
+    const nodes = [];
+    const connections = [];
+    
+    // Create network of interconnected nodes
+    for (let i = 0; i < 150; i++) {
+        const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
+        node.position.set(
+            (Math.random() - 0.5) * 20,
+            (Math.random() - 0.5) * 20,
+            (Math.random() - 0.5) * 20
+        );
+        
+        // Add pulsing animation data
+        node.userData = {
+            originalOpacity: Math.random() * 0.5 + 0.3,
+            pulseSpeed: Math.random() * 0.02 + 0.01,
+            pulsePhase: Math.random() * Math.PI * 2
+        };
+        
+        nodes.push(node);
+        scene.add(node);
+    }
+    
+    // Create connections between nearby nodes
+    const connectionMaterial = new THREE.LineBasicMaterial({ 
+        color: 0x06b6d4, 
+        transparent: true,
+        opacity: 0.3
+    });
+    
+    nodes.forEach((node, i) => {
+        nodes.slice(i + 1).forEach(otherNode => {
+            const distance = node.position.distanceTo(otherNode.position);
+            if (distance < 4) {
+                const geometry = new THREE.BufferGeometry().setFromPoints([
+                    node.position,
+                    otherNode.position
+                ]);
+                const line = new THREE.Line(geometry, connectionMaterial.clone());
+                line.userData = {
+                    pulseSpeed: Math.random() * 0.01 + 0.005,
+                    pulsePhase: Math.random() * Math.PI * 2
+                };
+                connections.push(line);
+                scene.add(line);
+            }
+        });
+    });
+    
+    // Add gaussian splat particles
+    const splatGeometry = new THREE.BufferGeometry();
+    const splatPositions = new Float32Array(500 * 3);
+    const splatColors = new Float32Array(500 * 3);
+    
+    for (let i = 0; i < 500; i++) {
+        const i3 = i * 3;
+        splatPositions[i3] = (Math.random() - 0.5) * 30;
+        splatPositions[i3 + 1] = (Math.random() - 0.5) * 30;
+        splatPositions[i3 + 2] = (Math.random() - 0.5) * 30;
+        
+        const hue = Math.random() * 0.2 + 0.6; // Blue to cyan hues
+        const color = new THREE.Color().setHSL(hue, 0.8, 0.6);
+        splatColors[i3] = color.r;
+        splatColors[i3 + 1] = color.g;
+        splatColors[i3 + 2] = color.b;
+    }
+    
+    splatGeometry.setAttribute('position', new THREE.BufferAttribute(splatPositions, 3));
+    splatGeometry.setAttribute('color', new THREE.BufferAttribute(splatColors, 3));
+    
+    const splatMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.6,
+        blending: THREE.AdditiveBlending
+    });
+    
+    const splatPoints = new THREE.Points(splatGeometry, splatMaterial);
+    scene.add(splatPoints);
+    
+    // Complex geometry (dodecahedron wireframe)
+    const dodecaGeometry = new THREE.DodecahedronGeometry(8, 1);
+    const dodecaMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0x6366f1, 
+        wireframe: true,
+        transparent: true,
+        opacity: 0.15
+    });
+    const dodecahedron = new THREE.Mesh(dodecaGeometry, dodecaMaterial);
+    scene.add(dodecahedron);
+    
+    // Position camera
+    camera.position.set(0, 0, 15);
+    
+    // Animation loop
+    let animationId;
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        
+        const time = Date.now() * 0.001;
+        
+        // Animate nodes
+        nodes.forEach(node => {
+            const userData = node.userData;
+            const pulse = Math.sin(time * userData.pulseSpeed + userData.pulsePhase) * 0.3 + 0.7;
+            node.material.opacity = userData.originalOpacity * pulse;
+            node.scale.setScalar(pulse);
+        });
+        
+        // Animate connections
+        connections.forEach(line => {
+            const userData = line.userData;
+            const pulse = Math.sin(time * userData.pulseSpeed + userData.pulsePhase) * 0.2 + 0.3;
+            line.material.opacity = pulse;
+        });
+        
+        // Rotate gaussian splats
+        splatPoints.rotation.x += 0.001;
+        splatPoints.rotation.y += 0.002;
+        
+        // Rotate dodecahedron
+        dodecahedron.rotation.x += 0.005;
+        dodecahedron.rotation.y += 0.003;
+        
+        // Subtle camera movement
+        camera.position.x = Math.sin(time * 0.1) * 2;
+        camera.position.y = Math.cos(time * 0.1) * 2;
+        camera.lookAt(0, 0, 0);
+        
+        renderer.render(scene, camera);
+    }
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    
+    animate();
+    
+    return () => {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        renderer.dispose();
+    };
+}
+
+function initPodcastProjectBackground() {
+    const container = document.getElementById('podcast-threejs-bg');
+    if (!container) return;
+    
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+    
+    // Audio waveform rings
+    const waveformRings = [];
+    for (let i = 0; i < 20; i++) {
+        const geometry = new THREE.RingGeometry(2 + i * 0.5, 2.2 + i * 0.5, 32);
+        const material = new THREE.MeshBasicMaterial({ 
+            color: new THREE.Color().setHSL(0.8 + i * 0.01, 0.8, 0.6),
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.DoubleSide
+        });
+        const ring = new THREE.Mesh(geometry, material);
+        ring.position.z = -i * 0.5;
+        ring.userData = {
+            originalOpacity: 0.3,
+            pulseSpeed: 0.05 + i * 0.002,
+            pulsePhase: i * 0.3
+        };
+        waveformRings.push(ring);
+        scene.add(ring);
+    }
+    
+    // Frequency spectrum bars
+    const spectrumBars = [];
+    const barGeometry = new THREE.BoxGeometry(0.2, 1, 0.2);
+    
+    for (let i = 0; i < 64; i++) {
+        const material = new THREE.MeshBasicMaterial({ 
+            color: new THREE.Color().setHSL(0.8, 0.8, 0.4 + Math.random() * 0.4),
+            transparent: true,
+            opacity: 0.7
+        });
+        const bar = new THREE.Mesh(barGeometry, material);
+        
+        const angle = (i / 64) * Math.PI * 2;
+        const radius = 8;
+        bar.position.x = Math.cos(angle) * radius;
+        bar.position.z = Math.sin(angle) * radius;
+        bar.position.y = -2;
+        
+        bar.userData = {
+            originalHeight: 1,
+            pulseSpeed: 0.1 + Math.random() * 0.1,
+            pulsePhase: Math.random() * Math.PI * 2
+        };
+        
+        spectrumBars.push(bar);
+        scene.add(bar);
+    }
+    
+    // Microphone particles
+    const particleGeometry = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(200 * 3);
+    const particleColors = new Float32Array(200 * 3);
+    
+    for (let i = 0; i < 200; i++) {
+        const i3 = i * 3;
+        particlePositions[i3] = (Math.random() - 0.5) * 20;
+        particlePositions[i3 + 1] = (Math.random() - 0.5) * 20;
+        particlePositions[i3 + 2] = (Math.random() - 0.5) * 20;
+        
+        const hue = 0.8 + Math.random() * 0.1; // Purple to pink hues
+        const color = new THREE.Color().setHSL(hue, 0.9, 0.7);
+        particleColors[i3] = color.r;
+        particleColors[i3 + 1] = color.g;
+        particleColors[i3 + 2] = color.b;
+    }
+    
+    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    particleGeometry.setAttribute('color', new THREE.BufferAttribute(particleColors, 3));
+    
+    const particleMaterial = new THREE.PointsMaterial({
+        size: 0.15,
+        vertexColors: true,
+        transparent: true,
+        opacity: 0.8,
+        blending: THREE.AdditiveBlending
+    });
+    
+    const particles = new THREE.Points(particleGeometry, particleMaterial);
+    scene.add(particles);
+    
+    // Complex geometry (icosahedron wireframe)
+    const icosaGeometry = new THREE.IcosahedronGeometry(6, 1);
+    const icosaMaterial = new THREE.MeshBasicMaterial({ 
+        color: 0x9333ea, 
+        wireframe: true,
+        transparent: true,
+        opacity: 0.2
+    });
+    const icosahedron = new THREE.Mesh(icosaGeometry, icosaMaterial);
+    scene.add(icosahedron);
+    
+    // Position camera
+    camera.position.set(0, 5, 12);
+    camera.lookAt(0, 0, 0);
+    
+    // Animation loop
+    let animationId;
+    function animate() {
+        animationId = requestAnimationFrame(animate);
+        
+        const time = Date.now() * 0.001;
+        
+        // Animate waveform rings
+        waveformRings.forEach((ring, index) => {
+            const userData = ring.userData;
+            const pulse = Math.sin(time * userData.pulseSpeed + userData.pulsePhase) * 0.5 + 0.5;
+            ring.material.opacity = userData.originalOpacity * pulse;
+            ring.scale.setScalar(0.8 + pulse * 0.4);
+            ring.rotation.z += 0.01 * (index % 2 === 0 ? 1 : -1);
+        });
+        
+        // Animate spectrum bars
+        spectrumBars.forEach(bar => {
+            const userData = bar.userData;
+            const height = Math.sin(time * userData.pulseSpeed + userData.pulsePhase) * 3 + 4;
+            bar.scale.y = height;
+            bar.position.y = height / 2 - 2;
+        });
+        
+        // Rotate particles
+        particles.rotation.x += 0.002;
+        particles.rotation.y += 0.001;
+        
+        // Rotate icosahedron
+        icosahedron.rotation.x += 0.003;
+        icosahedron.rotation.y += 0.004;
+        
+        // Subtle camera movement
+        camera.position.x = Math.sin(time * 0.05) * 3;
+        camera.position.z = 12 + Math.cos(time * 0.05) * 2;
+        camera.lookAt(0, 0, 0);
+        
+        renderer.render(scene, camera);
+    }
+    
+    // Handle resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    
+    animate();
+    
+    return () => {
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        renderer.dispose();
+    };
+}
