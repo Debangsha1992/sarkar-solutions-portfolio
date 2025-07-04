@@ -1857,7 +1857,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize timeline head scan viewer (simplified on mobile)
     if (!isOldIOS) {
-        const timelineViewer = new TimelineHeadScanViewer();
+        // Add delay to ensure Three.js loaders are ready
+        setTimeout(() => {
+            if (THREE && THREE.GLTFLoader) {
+                const timelineViewer = new TimelineHeadScanViewer();
+            } else {
+                console.warn('GLTFLoader not available, skipping 3D model loading');
+            }
+        }, 1000); // 1 second delay to ensure all loaders are ready
     }
     
     // Initialize premium project sections (with mobile optimization)
@@ -2255,6 +2262,13 @@ class TimelineHeadScanViewer {
     }
     
     loadModel() {
+        // Check if GLTFLoader is available
+        if (!THREE.GLTFLoader) {
+            console.error('GLTFLoader is not available');
+            this.onError(new Error('GLTFLoader is not available'));
+            return;
+        }
+        
         const loader = new THREE.GLTFLoader();
         
         loader.load(
@@ -2520,101 +2534,11 @@ function initAdvancedDroneViewport(container) {
         scene.add(directionalLight);
     }
     
-    // Create neural network visualization with mobile optimization
-    const neuralGroup = new THREE.Group();
-    
-    // Create nodes
-    const nodeGeometry = new THREE.SphereGeometry(0.1, isMobile ? 8 : 16, isMobile ? 8 : 16);
-    const nodeMaterial = isMobile ? 
-        new THREE.MeshBasicMaterial({ color: 0x6366f1 }) : // Simple material for mobile
-        new THREE.MeshStandardMaterial({
-            color: 0x6366f1,
-            emissive: 0x6366f1,
-            emissiveIntensity: 0.2,
-            metalness: 0.1,
-            roughness: 0.1
-        });
-    
-    const nodes = [];
-    const layers = isMobile ? [4, 6, 8, 6, 4] : [8, 12, 16, 12, 8]; // Reduced neural network architecture for mobile
-    
-    layers.forEach((nodeCount, layerIndex) => {
-        for (let i = 0; i < nodeCount; i++) {
-            const node = new THREE.Mesh(nodeGeometry, nodeMaterial.clone());
-            const angle = (i / nodeCount) * Math.PI * 2;
-            const radius = 2 + layerIndex * 0.5;
-            node.position.set(
-                Math.cos(angle) * radius,
-                (i - nodeCount / 2) * 0.3,
-                layerIndex * 2 - 4
-            );
-            node.userData = { layer: layerIndex, index: i };
-            nodes.push(node);
-            neuralGroup.add(node);
-        }
-    });
-    
-    // Create connections
-    const connectionMaterial = new THREE.LineBasicMaterial({
-        color: 0x06b6d4,
-        opacity: 0.3,
-        transparent: true
-    });
-    
-    for (let i = 0; i < layers.length - 1; i++) {
-        const currentLayerStart = layers.slice(0, i).reduce((sum, count) => sum + count, 0);
-        const nextLayerStart = layers.slice(0, i + 1).reduce((sum, count) => sum + count, 0);
-        
-        for (let j = 0; j < layers[i]; j++) {
-            for (let k = 0; k < layers[i + 1]; k++) {
-                const points = [
-                    nodes[currentLayerStart + j].position,
-                    nodes[nextLayerStart + k].position
-                ];
-                const geometry = new THREE.BufferGeometry().setFromPoints(points);
-                const line = new THREE.Line(geometry, connectionMaterial);
-                neuralGroup.add(line);
-            }
-        }
-    }
-    
-    // Add advanced geometric elements
-    const geometryGroup = new THREE.Group();
-    
-    // Create Gaussian splat visualization with mobile optimization
-    const splatGeometry = new THREE.IcosahedronGeometry(0.5, isMobile ? 1 : 2);
-    const splatMaterial = isMobile ?
-        new THREE.MeshBasicMaterial({ color: 0x3b82f6, transparent: true, opacity: 0.6 }) : // Simple material for mobile
-        new THREE.MeshStandardMaterial({
-            color: 0x3b82f6,
-            transparent: true,
-            opacity: 0.6,
-            emissive: 0x3b82f6,
-            emissiveIntensity: 0.1
-        });
-    
-    for (let i = 0; i < mobileConfig.gaussianSplats; i++) {
-        const splat = new THREE.Mesh(splatGeometry, splatMaterial.clone());
-        splat.position.set(
-            (Math.random() - 0.5) * 10,
-            (Math.random() - 0.5) * 10,
-            (Math.random() - 0.5) * 10
-        );
-        splat.scale.setScalar(Math.random() * 0.5 + 0.5);
-        splat.userData = { 
-            originalPosition: splat.position.clone(),
-            rotationSpeed: Math.random() * 0.02 + 0.01
-        };
-        geometryGroup.add(splat);
-    }
-    
-    scene.add(neuralGroup);
-    scene.add(geometryGroup);
+    // Removed Gaussian splat visualization to prevent interference
     
     camera.position.z = 8;
     
     // Animation variables
-    let neuralRotation = 0;
     let gaussianFocus = false;
     let depthAnalysis = false;
     let animationId;
@@ -2623,45 +2547,7 @@ function initAdvancedDroneViewport(container) {
     function animate() {
         animationId = requestAnimationFrame(animate);
         
-        // Update neural network
-        neuralRotation += isMobile ? 0.002 : 0.005; // Slower rotation on mobile
-        neuralGroup.rotation.y = neuralRotation;
-        
-        // Pulse nodes (simplified on mobile)
-        if (!isMobile) {
-            nodes.forEach((node, index) => {
-                const time = Date.now() * 0.001;
-                const pulseIntensity = Math.sin(time * 2 + index * 0.1) * 0.1 + 0.2;
-                if (node.material.emissiveIntensity !== undefined) {
-                    node.material.emissiveIntensity = pulseIntensity;
-                }
-                node.scale.setScalar(1 + pulseIntensity * 0.5);
-            });
-        }
-        
-        // Update Gaussian splats (simplified on mobile)
-        geometryGroup.children.forEach((splat, index) => {
-            if (splat.userData && splat.userData.rotationSpeed) {
-                const rotationSpeed = isMobile ? splat.userData.rotationSpeed * 0.5 : splat.userData.rotationSpeed;
-                splat.rotation.x += rotationSpeed;
-                splat.rotation.y += rotationSpeed * 0.7;
-                
-                if (!isMobile) {
-                    if (gaussianFocus) {
-                        const targetScale = 1.5;
-                        splat.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.02);
-                    } else {
-                        const originalScale = 0.5 + Math.sin(Date.now() * 0.001 + index) * 0.2;
-                        splat.scale.lerp(new THREE.Vector3(originalScale, originalScale, originalScale), 0.02);
-                    }
-                }
-            }
-        });
-        
-        // Depth analysis effect (disabled on mobile)
-        if (!isMobile && depthAnalysis) {
-            camera.position.z = 8 + Math.sin(Date.now() * 0.002) * 2;
-        }
+        // Removed Gaussian splat animation code
         
         renderer.render(scene, camera);
     }
@@ -2680,9 +2566,6 @@ function initAdvancedDroneViewport(container) {
         const action = e.target.dataset.action || e.target.closest('[data-action]')?.dataset.action;
         
         switch (action) {
-            case 'neural-rotate':
-                neuralGroup.rotation.y += Math.PI * 2;
-                break;
             case 'gaussian-focus':
                 gaussianFocus = !gaussianFocus;
                 break;
@@ -2691,7 +2574,6 @@ function initAdvancedDroneViewport(container) {
                 break;
             case 'reset-view':
                 camera.position.set(0, 0, 8);
-                neuralGroup.rotation.set(0, 0, 0);
                 gaussianFocus = false;
                 depthAnalysis = false;
                 break;

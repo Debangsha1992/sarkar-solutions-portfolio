@@ -12,6 +12,8 @@ class PremiumFeaturedManager {
         this.initInteractiveCube();
         this.initVideoPlayer();
         this.init3DVideoWeb();
+        this.initDroneVideoShowcase();
+        this.initPodcastAudioVisualizer();
         this.initAudioVisualizer();
         this.initGaugeAnimations();
         this.initScrollAnimations();
@@ -19,97 +21,97 @@ class PremiumFeaturedManager {
 
     // Three.js Background Scenes
     initThreeJSScenes() {
-        this.initDroneScene();
+        // this.initDroneScene(); // Removed - container no longer exists
         this.initPodcastScene();
     }
 
     initDroneScene() {
-        const container = document.getElementById('drone-threejs-scene');
-        if (!container) return;
+        // const container = document.getElementById('drone-threejs-scene');
+        // if (!container) return;
 
         // Scene setup
-        this.droneScene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        // this.droneScene = new THREE.Scene();
+        // const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+        // const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
         
-        renderer.setSize(container.offsetWidth, container.offsetHeight);
-        renderer.setClearColor(0x000000, 0);
-        container.appendChild(renderer.domElement);
+        // renderer.setSize(container.offsetWidth, container.offsetHeight);
+        // renderer.setClearColor(0x000000, 0);
+        // container.appendChild(renderer.domElement);
 
         // Create geometric particles
-        const geometry = new THREE.BufferGeometry();
-        const particles = 2000;
-        const positions = new Float32Array(particles * 3);
+        // const geometry = new THREE.BufferGeometry();
+        // const particles = 2000;
+        // const positions = new Float32Array(particles * 3);
         
-        for (let i = 0; i < particles * 3; i += 3) {
-            positions[i] = (Math.random() - 0.5) * 100;
-            positions[i + 1] = (Math.random() - 0.5) * 100;
-            positions[i + 2] = (Math.random() - 0.5) * 100;
-        }
+        // for (let i = 0; i < particles * 3; i += 3) {
+        //     positions[i] = (Math.random() - 0.5) * 100;
+        //     positions[i + 1] = (Math.random() - 0.5) * 100;
+        //     positions[i + 2] = (Math.random() - 0.5) * 100;
+        // }
         
-        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        // geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
         
-        const material = new THREE.PointsMaterial({
-            color: 0x6366f1,
-            size: 2,
-            transparent: true,
-            opacity: 0.6
-        });
+        // const material = new THREE.PointsMaterial({
+        //     color: 0x6366f1,
+        //     size: 2,
+        //     transparent: true,
+        //     opacity: 0.6
+        // });
         
-        const points = new THREE.Points(geometry, material);
-        this.droneScene.add(points);
+        // const points = new THREE.Points(geometry, material);
+        // this.droneScene.add(points);
 
         // Add rotating wireframe cubes
-        const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
-        const cubeMaterial = new THREE.MeshBasicMaterial({
-            color: 0x06b6d4,
-            wireframe: true,
-            transparent: true,
-            opacity: 0.3
-        });
+        // const cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
+        // const cubeMaterial = new THREE.MeshBasicMaterial({
+        //     color: 0x06b6d4,
+        //     wireframe: true,
+        //     transparent: true,
+        //     opacity: 0.3
+        // });
 
-        for (let i = 0; i < 5; i++) {
-            const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-            cube.position.set(
-                (Math.random() - 0.5) * 50,
-                (Math.random() - 0.5) * 50,
-                (Math.random() - 0.5) * 50
-            );
-            cube.rotation.set(
-                Math.random() * Math.PI,
-                Math.random() * Math.PI,
-                Math.random() * Math.PI
-            );
-            this.droneScene.add(cube);
-        }
+        // for (let i = 0; i < 5; i++) {
+        //     const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        //     cube.position.set(
+        //         (Math.random() - 0.5) * 50,
+        //         (Math.random() - 0.5) * 50,
+        //         (Math.random() - 0.5) * 50
+        //     );
+        //     cube.rotation.set(
+        //         Math.random() * Math.PI,
+        //         Math.random() * Math.PI,
+        //         Math.random() * Math.PI
+        //     );
+        //     this.droneScene.add(cube);
+        // }
 
-        camera.position.z = 50;
+        // camera.position.z = 50;
 
         // Animation loop
-        const animate = () => {
-            requestAnimationFrame(animate);
+        // const animate = () => {
+        //     requestAnimationFrame(animate);
             
-            points.rotation.x += 0.001;
-            points.rotation.y += 0.002;
+        //     points.rotation.x += 0.001;
+        //     points.rotation.y += 0.002;
             
-            this.droneScene.children.forEach((child, index) => {
-                if (child instanceof THREE.Mesh) {
-                    child.rotation.x += 0.01;
-                    child.rotation.y += 0.01;
-                    child.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
-                }
-            });
+        //     this.droneScene.children.forEach((child, index) => {
+        //         if (child instanceof THREE.Mesh) {
+        //             child.rotation.x += 0.01;
+        //             child.rotation.y += 0.01;
+        //             child.position.y += Math.sin(Date.now() * 0.001 + index) * 0.01;
+        //         }
+        //     });
             
-            renderer.render(this.droneScene, camera);
-        };
-        animate();
+        //     renderer.render(this.droneScene, camera);
+        // };
+        // animate();
 
         // Handle resize
-        window.addEventListener('resize', () => {
-            camera.aspect = container.offsetWidth / container.offsetHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(container.offsetWidth, container.offsetHeight);
-        });
+        // window.addEventListener('resize', () => {
+        //     camera.aspect = container.offsetWidth / container.offsetHeight;
+        //     camera.updateProjectionMatrix();
+        //     renderer.setSize(container.offsetWidth, container.offsetHeight);
+        // });
     }
 
     initPodcastScene() {
@@ -652,6 +654,668 @@ class PremiumFeaturedManager {
         this.video3DScene = { scene, camera, renderer, videos, videoScreens, connections };
     }
 
+    // 3D Video Web Showcase for Drone Section
+    initDroneVideoShowcase() {
+        const container = document.getElementById('drone-3d-viewport');
+        if (!container) {
+            console.log('Drone 3D viewport container not found');
+            return;
+        }
+
+        // Check if Three.js is available
+        if (typeof THREE === 'undefined') {
+            console.error('Three.js is not loaded');
+            return;
+        }
+
+        // Check if GLTFLoader is available
+        if (!THREE.GLTFLoader) {
+            console.error('GLTFLoader is not available. Some 3D features may not work.');
+        }
+
+        try {
+            // Scene setup
+            const scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a1a);
+            
+            const camera = new THREE.PerspectiveCamera(75, container.offsetWidth / container.offsetHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            
+            renderer.setSize(container.offsetWidth, container.offsetHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            
+            // Set up canvas for interaction
+            renderer.domElement.style.cursor = 'grab';
+            renderer.domElement.style.touchAction = 'none';
+            renderer.domElement.tabIndex = 0; // Make it focusable
+            
+            container.appendChild(renderer.domElement);
+
+            console.log('✓ Three.js scene initialized successfully');
+            console.log('✓ Canvas size:', renderer.domElement.width, 'x', renderer.domElement.height);
+            console.log('✓ Canvas added to container:', container.className);
+
+        // Video data configuration
+        const videoData = [
+            {
+                src: 'videos/urban_scanning.mp4',
+                title: 'Urban Drone Survey',
+                position: { x: -4, y: 2, z: 0 },
+                rotation: { x: 0, y: 0.2, z: 0 },
+                id: 'urban_scanning'
+            },
+            {
+                src: 'videos/point_cloud_generation.mp4',
+                title: 'Point Cloud Generation',
+                position: { x: 4, y: -1, z: -2 },
+                rotation: { x: 0, y: -0.3, z: 0 },
+                id: 'point_cloud_generation'
+            },
+            {
+                src: 'videos/nerf-demo2.mp4',
+                title: 'Scanning Process Demo',
+                position: { x: 0, y: -3, z: 2 },
+                rotation: { x: 0.1, y: 0, z: 0 },
+                id: 'nerf_demo'
+            }
+        ];
+
+        // Create video screens and store references
+        const videoScreens = [];
+        const videoElements = [];
+        const connectionLines = [];
+
+        videoData.forEach((data, index) => {
+            // Create video element
+            const video = document.createElement('video');
+            video.src = data.src;
+            video.crossOrigin = 'anonymous';
+            video.loop = true;
+            video.muted = true;
+            video.playsInline = true;
+            video.autoplay = false; // Don't autoplay initially
+            video.style.display = 'none';
+            document.body.appendChild(video);
+            videoElements.push(video);
+            
+            // Start video playback with better error handling
+            video.addEventListener('loadeddata', () => {
+                console.log('Video loaded successfully:', data.src);
+                // Start playing the first video only
+                if (index === 0) {
+                    video.play().catch(e => {
+                        console.log('Video autoplay prevented:', e);
+                    });
+                }
+            });
+            
+            video.addEventListener('loadedmetadata', () => {
+                console.log('Video metadata loaded:', data.src);
+            });
+            
+            video.addEventListener('canplaythrough', () => {
+                console.log('Video can play through:', data.src);
+            });
+            
+            video.addEventListener('error', (e) => {
+                console.error('Video loading error:', data.src, e);
+            });
+            
+            // Force video to start loading
+            video.load();
+
+            // Create video texture
+            const videoTexture = new THREE.VideoTexture(video);
+            videoTexture.minFilter = THREE.LinearFilter;
+            videoTexture.magFilter = THREE.LinearFilter;
+            videoTexture.format = THREE.RGBFormat;
+            videoTexture.flipY = true; // Fix upside down videos
+            videoTexture.needsUpdate = true;
+
+            // Create screen geometry and material
+            const screenGeometry = new THREE.PlaneGeometry(3, 2);
+            const screenMaterial = new THREE.MeshBasicMaterial({ 
+                map: videoTexture,
+                side: THREE.DoubleSide
+            });
+            
+            // Create screen mesh
+            const screen = new THREE.Mesh(screenGeometry, screenMaterial);
+            screen.position.set(data.position.x, data.position.y, data.position.z);
+            screen.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+            screen.userData = { 
+                videoElement: video, 
+                videoData: data,
+                index: index,
+                videoTexture: videoTexture
+            };
+
+            // Add subtle glow effect
+            const glowGeometry = new THREE.PlaneGeometry(3.2, 2.2);
+            const glowMaterial = new THREE.MeshBasicMaterial({
+                color: 0x6366f1,
+                transparent: true,
+                opacity: 0.3,
+                side: THREE.DoubleSide
+            });
+            const glow = new THREE.Mesh(glowGeometry, glowMaterial);
+            glow.position.copy(screen.position);
+            glow.rotation.copy(screen.rotation);
+            glow.position.z -= 0.01;
+
+            scene.add(glow);
+            scene.add(screen);
+            videoScreens.push(screen);
+
+            // Create screen border
+            const borderGeometry = new THREE.EdgesGeometry(screenGeometry);
+            const borderMaterial = new THREE.LineBasicMaterial({ 
+                color: 0x6366f1,
+                linewidth: 2
+            });
+            const border = new THREE.LineSegments(borderGeometry, borderMaterial);
+            border.position.copy(screen.position);
+            border.rotation.copy(screen.rotation);
+            scene.add(border);
+        });
+
+        // Create connection threads between screens
+        for (let i = 0; i < videoScreens.length; i++) {
+            for (let j = i + 1; j < videoScreens.length; j++) {
+                const points = [
+                    videoScreens[i].position.clone(),
+                    videoScreens[j].position.clone()
+                ];
+                
+                const geometry = new THREE.BufferGeometry().setFromPoints(points);
+                const material = new THREE.LineBasicMaterial({ 
+                    color: 0x06b6d4, 
+                    transparent: true, 
+                    opacity: 0.6,
+                    linewidth: 1
+                });
+                
+                const line = new THREE.Line(geometry, material);
+                scene.add(line);
+                connectionLines.push(line);
+            }
+        }
+
+        // Add ambient lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+        scene.add(ambientLight);
+
+        // Add directional light
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(10, 10, 5);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+
+        // Removed floating particles to prevent visual clutter
+
+        // Camera positioning
+        camera.position.set(0, 0, 8);
+        camera.lookAt(0, 0, 0);
+
+        // Initialize OrbitControls - wait for DOM to be ready
+        let controls;
+        
+        // Debug logging
+        console.log('THREE.OrbitControls available:', typeof THREE.OrbitControls);
+        console.log('Renderer DOM element:', renderer.domElement);
+        
+        // Create OrbitControls
+        if (THREE.OrbitControls) {
+            try {
+                controls = new THREE.OrbitControls(camera, renderer.domElement);
+                
+                // Basic settings
+                controls.enableDamping = true;
+                controls.dampingFactor = 0.25;
+                controls.enableZoom = true;
+                controls.enableRotate = true;
+                controls.enablePan = false;
+                
+                // Auto rotation
+                controls.autoRotate = true;
+                controls.autoRotateSpeed = 1.0;
+                
+                // Distance limits
+                controls.minDistance = 5;
+                controls.maxDistance = 20;
+                
+                // Rotation limits
+                controls.minPolarAngle = 0; // radians
+                controls.maxPolarAngle = Math.PI; // radians
+                
+                // Mouse sensitivity
+                controls.rotateSpeed = 1.0;
+                controls.zoomSpeed = 1.2;
+                
+                // Set target
+                controls.target.set(0, 0, 0);
+                controls.update();
+                
+                console.log('✓ OrbitControls initialized successfully');
+                console.log('✓ Controls enabled rotation:', controls.enableRotate);
+                console.log('✓ Controls enabled zoom:', controls.enableZoom);
+                console.log('✓ Renderer domElement:', renderer.domElement.tagName);
+                
+                // Test controls immediately
+                setTimeout(() => {
+                    if (controls) {
+                        console.log('✓ OrbitControls still active after 1 second');
+                        console.log('✓ Auto rotate:', controls.autoRotate);
+                        console.log('✓ Camera position:', camera.position.x.toFixed(2), camera.position.y.toFixed(2), camera.position.z.toFixed(2));
+                    }
+                }, 1000);
+                
+            } catch (error) {
+                console.error('✗ Error creating OrbitControls:', error);
+                controls = null;
+            }
+        } else {
+            console.error('✗ THREE.OrbitControls not found!');
+            console.log('Available THREE properties:', Object.keys(THREE));
+        }
+
+        // Raycaster for click interactions
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+
+        function onMouseClick(event) {
+            // Don't process clicks if user was dragging
+            if (isDragging) {
+                console.log('✗ Click ignored - user was dragging');
+                return;
+            }
+            
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(videoScreens);
+
+            if (intersects.length > 0) {
+                // Prevent OrbitControls from interfering with video clicks
+                event.stopPropagation();
+                event.preventDefault();
+                
+                const clickedScreen = intersects[0].object;
+                const video = clickedScreen.userData.videoElement;
+                const videoData = clickedScreen.userData.videoData;
+                
+                console.log('✓ Video screen clicked:', videoData.title);
+                
+                // Stop all other videos
+                videoElements.forEach(v => {
+                    if (v !== video) {
+                        v.pause();
+                    }
+                });
+                
+                // Toggle video play/pause
+                if (video.paused) {
+                    video.play().then(() => {
+                        console.log('✓ Video playing:', videoData.title);
+                        if (controls) controls.autoRotate = false; // Stop auto rotation when video plays
+                    }).catch(e => {
+                        console.error('✗ Error playing video:', e);
+                    });
+                } else {
+                    video.pause();
+                    console.log('✓ Video paused:', videoData.title);
+                    if (controls) controls.autoRotate = true;
+                }
+
+                // Update info panel
+                updateInfoPanel(videoData.id);
+                
+                // Enhanced click effect with animation
+                const originalScale = { x: 1.05, y: 1.05, z: 1.05 }; // Start from hover scale
+                clickedScreen.scale.set(1.15, 1.15, 1.15);
+                
+                // Animate back to hover scale
+                setTimeout(() => {
+                    clickedScreen.scale.set(originalScale.x, originalScale.y, originalScale.z);
+                }, 150);
+                
+                // Visual feedback with emissive color
+                clickedScreen.material.emissive.setHex(0x6666ff);
+                setTimeout(() => {
+                    clickedScreen.material.emissive.setHex(0x4444ff);
+                }, 100);
+            } else {
+                console.log('✓ Click on empty space - controls should work');
+            }
+        }
+
+        function updateInfoPanel(videoId) {
+            const infoCards = document.querySelectorAll('.info-card');
+            infoCards.forEach(card => {
+                card.classList.remove('active');
+                if (card.dataset.video === videoId) {
+                    card.classList.add('active');
+                }
+            });
+        }
+
+        // Mouse interaction state
+        let isMouseDown = false;
+        let isDragging = false;
+        let mouseDownTime = 0;
+        
+        // Add event listeners
+        renderer.domElement.addEventListener('mousedown', onMouseDown, false);
+        renderer.domElement.addEventListener('mousemove', onMouseMove, false);
+        renderer.domElement.addEventListener('mouseup', onMouseUp, false);
+        renderer.domElement.addEventListener('click', onMouseClick, false);
+        
+        function onMouseDown(event) {
+            isMouseDown = true;
+            isDragging = false;
+            mouseDownTime = Date.now();
+            renderer.domElement.style.cursor = 'grabbing';
+            
+            console.log('✓ Mouse down detected');
+        }
+        
+        function onMouseMove(event) {
+            if (isMouseDown) {
+                isDragging = true;
+            }
+            
+            const rect = renderer.domElement.getBoundingClientRect();
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+            raycaster.setFromCamera(mouse, camera);
+            const intersects = raycaster.intersectObjects(videoScreens);
+
+            // Reset all screens to default state
+            videoScreens.forEach(screen => {
+                screen.material.emissive.setHex(0x000000);
+                // Reset scale if not the hovered screen
+                if (intersects.length === 0 || intersects[0].object !== screen) {
+                    screen.scale.set(1, 1, 1);
+                }
+            });
+
+            if (intersects.length > 0) {
+                const hoveredScreen = intersects[0].object;
+                const videoData = hoveredScreen.userData.videoData;
+                
+                // Enhanced hover effects
+                hoveredScreen.material.emissive.setHex(0x4444ff);
+                hoveredScreen.scale.set(1.05, 1.05, 1.05);
+                
+                // Change cursor only if not dragging
+                if (!isMouseDown) {
+                    renderer.domElement.style.cursor = 'pointer';
+                }
+                
+                // Stop auto rotation when hovering
+                if (controls) {
+                    controls.autoRotate = false;
+                }
+                
+                // Update info panel
+                updateInfoPanel(videoData.id);
+            } else {
+                if (!isMouseDown) {
+                    renderer.domElement.style.cursor = 'grab';
+                }
+                
+                // Resume auto rotation when not hovering
+                if (controls) {
+                    controls.autoRotate = true;
+                }
+            }
+        }
+        
+        function onMouseUp(event) {
+            isMouseDown = false;
+            renderer.domElement.style.cursor = 'grab';
+            
+            console.log('✓ Mouse up detected, isDragging:', isDragging);
+            
+            // Small delay to prevent accidental clicks when dragging
+            setTimeout(() => {
+                isDragging = false;
+            }, 100);
+        }
+
+        // Animation loop
+        const clock = new THREE.Clock();
+        let isAnimating = false;
+        
+        function animate() {
+            if (isAnimating) return;
+            isAnimating = true;
+            
+            requestAnimationFrame(() => {
+                isAnimating = false;
+                animate();
+            });
+            
+            const elapsedTime = clock.getElapsedTime();
+            
+            // Removed particles animation
+            
+            // Update video textures
+            videoScreens.forEach((screen) => {
+                if (screen.userData.videoTexture && screen.userData.videoElement) {
+                    const video = screen.userData.videoElement;
+                    if (video.readyState >= video.HAVE_CURRENT_DATA) {
+                        screen.userData.videoTexture.needsUpdate = true;
+                    }
+                }
+            });
+            
+            // Animate connection lines opacity
+            connectionLines.forEach((line, index) => {
+                line.material.opacity = 0.3 + Math.sin(elapsedTime * 2 + index) * 0.3;
+            });
+            
+            // Gentle floating animation for screens
+            videoScreens.forEach((screen, index) => {
+                const originalY = videoData[index].position.y;
+                screen.position.y = originalY + Math.sin(elapsedTime * 1.5 + index * 2) * 0.1;
+                screen.rotation.y = videoData[index].rotation.y + Math.sin(elapsedTime * 0.8 + index) * 0.02;
+            });
+            
+            // Update controls
+            if (controls) {
+                controls.update();
+            }
+            
+            renderer.render(scene, camera);
+        }
+
+        // Handle window resize
+        function handleResize() {
+            const width = container.offsetWidth;
+            const height = container.offsetHeight;
+            
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        }
+
+        window.addEventListener('resize', handleResize, false);
+
+        // Hide loading screen and start animation
+        setTimeout(() => {
+            const loadingEl = container.querySelector('.viewport-loading');
+            if (loadingEl) {
+                loadingEl.style.opacity = '0';
+                setTimeout(() => loadingEl.style.display = 'none', 500);
+            }
+            animate();
+        }, 1000);
+
+        // Info card click handlers
+        const infoCards = document.querySelectorAll('.info-card');
+        infoCards.forEach(card => {
+            card.addEventListener('click', () => {
+                const videoId = card.dataset.video;
+                const screen = videoScreens.find(s => s.userData.videoData.id === videoId);
+                
+                if (screen) {
+                    const video = screen.userData.videoElement;
+                    
+                    // Focus camera on selected screen
+                    const targetPosition = screen.position.clone();
+                    targetPosition.z += 5;
+                    
+                    // Smooth camera transition
+                    const startPosition = camera.position.clone();
+                    const startTime = Date.now();
+                    const duration = 1500;
+                    
+                    function animateCamera() {
+                        const elapsed = Date.now() - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const easeProgress = 1 - Math.pow(1 - progress, 3);
+                        
+                        camera.position.lerpVectors(startPosition, targetPosition, easeProgress);
+                        camera.lookAt(screen.position);
+                        
+                        if (progress < 1) {
+                            requestAnimationFrame(animateCamera);
+                        }
+                    }
+                    
+                    animateCamera();
+                    
+                    // Play video
+                    if (video.paused) {
+                        video.play();
+                    }
+                    
+                    updateInfoPanel(videoId);
+                }
+            });
+        });
+
+        // Store references for cleanup
+        this.droneShowcase = {
+            scene,
+            camera,
+            renderer,
+            controls,
+            videoElements,
+            cleanup: () => {
+                videoElements.forEach(video => {
+                    video.pause();
+                    video.remove();
+                });
+                renderer.dispose();
+                window.removeEventListener('resize', handleResize);
+            }
+        };
+
+        } catch (error) {
+            console.error('Error initializing drone 3D showcase:', error);
+            // Hide loading screen on error
+            const loadingEl = container.querySelector('.viewport-loading');
+            if (loadingEl) {
+                loadingEl.innerHTML = '<div style="color: #ff4444;">Failed to load 3D experience</div>';
+            }
+        }
+    }
+
+    // Podcast Audio Visualizer Background
+    initPodcastAudioVisualizer() {
+        const container = document.getElementById('podcast-threejs-scene');
+        if (!container) return;
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        container.appendChild(renderer.domElement);
+
+        // Create audio wave visualization
+        const waveGeometry = new THREE.RingGeometry(1, 8, 32);
+        const waveMaterial = new THREE.MeshBasicMaterial({
+            color: 0x9333ea,
+            transparent: true,
+            opacity: 0.3,
+            side: THREE.DoubleSide
+        });
+
+        const waves = [];
+        for (let i = 0; i < 5; i++) {
+            const wave = new THREE.Mesh(waveGeometry, waveMaterial.clone());
+            wave.position.z = i * -2;
+            wave.material.opacity = 0.5 - i * 0.1;
+            scene.add(wave);
+            waves.push(wave);
+        }
+
+        // Add floating musical notes
+        const noteCount = 50;
+        const noteGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+        const noteMaterial = new THREE.MeshBasicMaterial({
+            color: 0xa855f7,
+            transparent: true,
+            opacity: 0.6
+        });
+
+        const notes = [];
+        for (let i = 0; i < noteCount; i++) {
+            const note = new THREE.Mesh(noteGeometry, noteMaterial);
+            note.position.set(
+                (Math.random() - 0.5) * 30,
+                (Math.random() - 0.5) * 30,
+                (Math.random() - 0.5) * 30
+            );
+            scene.add(note);
+            notes.push(note);
+        }
+
+        camera.position.z = 15;
+
+        const clock = new THREE.Clock();
+
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const elapsedTime = clock.getElapsedTime();
+            
+            // Animate waves
+            waves.forEach((wave, index) => {
+                wave.rotation.z = elapsedTime * 0.3 + index * 0.5;
+                wave.scale.setScalar(1 + Math.sin(elapsedTime * 2 + index) * 0.1);
+            });
+            
+            // Animate notes
+            notes.forEach((note, index) => {
+                note.position.y += Math.sin(elapsedTime * 2 + index) * 0.02;
+                note.rotation.x = elapsedTime * 0.5 + index;
+                note.rotation.y = elapsedTime * 0.3 + index;
+            });
+            
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        this.podcastVisualizer = {
+            scene,
+            camera,
+            renderer,
+            cleanup: () => {
+                renderer.dispose();
+            }
+        };
+    }
+
     // Audio Visualizer
     initAudioVisualizer() {
         const canvas = document.getElementById('audio-canvas');
@@ -889,5 +1553,8 @@ class PremiumFeaturedManager {
 
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    new PremiumFeaturedManager();
+    // Add a small delay to ensure all scripts are loaded
+    setTimeout(() => {
+        new PremiumFeaturedManager();
+    }, 500);
 }); 

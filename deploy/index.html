@@ -7,10 +7,34 @@
     <meta name="description" content="CTO @EclimAi | 2x Masters @UBC | Machine Learning Researcher specializing in Computer Vision, NeRF, and Generative AI">
     
     <!-- Three.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/PLYLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r152/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+        // Verify THREE.js components are available
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('🔍 THREE.js Debug Info:');
+            console.log('  THREE version:', THREE.REVISION);
+            
+            if (typeof THREE === 'undefined') {
+                console.error('❌ THREE.js is not loaded!');
+                return;
+            }
+            
+            if (!THREE.GLTFLoader) {
+                console.error('❌ THREE.GLTFLoader is not available.');
+            } else {
+                console.log('✅ THREE.GLTFLoader is ready');
+            }
+            
+            if (!THREE.OrbitControls) {
+                console.error('❌ THREE.OrbitControls is not available!');
+                console.log('Available THREE objects:', Object.keys(THREE));
+            } else {
+                console.log('✅ THREE.OrbitControls is ready');
+            }
+        });
+    </script>
     
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -456,8 +480,8 @@
                         and neural reconstruction techniques. Watch as raw drone data becomes immersive digital twins.
                     </p>
                     <div class="showcase-actions">
-                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
-                            Explore Projects
+                        <button class="btn btn-primary" onclick="document.getElementById('drone-showcase-section').scrollIntoView({behavior: 'smooth'})">
+                            Explore 3D Showcase
                         </button>
                         <button class="btn btn-secondary video-control-btn" id="video-toggle">
                             <span class="control-text">Pause</span>
@@ -500,8 +524,8 @@
                         Available on YouTube, Spotify, and Apple Podcasts, making cutting-edge machine learning accessible to everyone.
                     </p>
                     <div class="showcase-actions">
-                        <button class="btn btn-primary" onclick="document.getElementById('projects').scrollIntoView({behavior: 'smooth'})">
-                            Explore Content
+                        <button class="btn btn-primary" onclick="document.getElementById('podcast-showcase-section').scrollIntoView({behavior: 'smooth'})">
+                            Explore Podcast Hub
                         </button>
                         <button class="btn btn-secondary" onclick="window.open('https://lnkd.in/gYsGUaeN', '_blank')">
                             Watch on YouTube
@@ -518,7 +542,193 @@
             </div>
         </section>
 
+        <!-- Premium Video Web Showcase Sections -->
+        
+        <!-- Drone City Scanning & 3D Gaussian Splatting Section -->
+        <section id="drone-showcase-section" class="premium-video-section drone-showcase">
+            <div class="premium-header">
+                <div class="floating-badge">
+                    <span class="badge-shimmer"></span>
+                    <span class="badge-text">Interactive 3D Showcase</span>
+                </div>
+                <h1 class="premium-title">
+                    <span class="title-fragment" data-text="Drone">Drone</span>
+                    <span class="title-fragment" data-text="City">City</span>
+                    <span class="title-fragment accent">Scanning</span>
+                </h1>
+                <div class="subtitle-container">
+                    <span class="subtitle-accent">&</span>
+                    <h2 class="premium-subtitle">3D Gaussian Splatting</h2>
+                </div>
+                <p class="premium-description">Explore our advanced 3D reconstruction pipeline through an interactive web of connected video screens</p>
+            </div>
 
+            <div class="video-web-container-fullwidth">
+                <div class="video-3d-viewport-fullwidth" id="drone-3d-viewport">
+                    <div class="viewport-loading">
+                        <div class="loading-spinner"></div>
+                        <span>Loading 3D Experience...</span>
+                    </div>
+                    <div class="viewport-instructions">
+                        <p>🖱️ Drag to rotate • 🔍 Scroll to zoom • 📱 Click screens to play videos</p>
+                    </div>
+                    
+                    <div class="video-info-panel-overlay">
+                        <div class="info-card active" data-video="urban_scanning">
+                            <div class="info-icon">🌆</div>
+                            <div class="info-content">
+                                <h3>Urban Drone Survey</h3>
+                                <p>Advanced aerial photogrammetry capturing urban environments with precision mapping and real-time processing</p>
+                                <div class="tech-tags">
+                                    <span class="tag">Photogrammetry</span>
+                                    <span class="tag">Real-time</span>
+                                    <span class="tag">Urban Mapping</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card" data-video="point_cloud_generation">
+                            <div class="info-icon">📊</div>
+                            <div class="info-content">
+                                <h3>Point Cloud Generation</h3>
+                                <p>Real-time 3D point cloud processing from drone footage using advanced neural algorithms</p>
+                                <div class="tech-tags">
+                                    <span class="tag">Point Clouds</span>
+                                    <span class="tag">Neural Processing</span>
+                                    <span class="tag">3D Reconstruction</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card" data-video="nerf_demo">
+                            <div class="info-icon">🎬</div>
+                            <div class="info-content">
+                                <h3>Scanning Process Demo</h3>
+                                <p>Complete workflow demonstration of neural radiance field reconstruction and Gaussian splatting</p>
+                                <div class="tech-tags">
+                                    <span class="tag">NeRF</span>
+                                    <span class="tag">Gaussian Splatting</span>
+                                    <span class="tag">Demo</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Podcast & Technical Communication Section -->
+        <section id="podcast-showcase-section" class="premium-video-section podcast-showcase">
+            <div class="threejs-scene" id="podcast-threejs-scene"></div>
+            <div class="frosted-overlay"></div>
+            <div class="container">
+                <div class="premium-header">
+                    <div class="floating-badge podcast-badge">
+                        <span class="badge-shimmer podcast-shimmer"></span>
+                        <span class="badge-text">AI Communication Hub</span>
+                    </div>
+                    <h1 class="premium-title">
+                        <span class="title-fragment" data-text="AI">AI</span>
+                        <span class="title-fragment accent">Podcast</span>
+                    </h1>
+                    <div class="subtitle-container">
+                        <span class="subtitle-accent">&</span>
+                        <h2 class="premium-subtitle">Technical Communication</h2>
+                    </div>
+                    <p class="premium-description">Bridging complex AI concepts with accessible, engaging storytelling across multiple platforms</p>
+                </div>
+
+                <div class="youtube-showcase-container">
+                    <div class="youtube-grid">
+                        <div class="youtube-card featured">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/br2xONoH41w?list=PLV9VnT1svgQQooy1h9A8yXHhc8ZwYGHoy" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <div class="video-info">
+                                <h3>AI Podcast</h3>
+                                <p>Comprehensive AI discussions covering latest research and practical applications</p>
+                                <div class="video-stats">
+                                    <span class="stat">Playlist</span>
+                                    <span class="stat">AI Research</span>
+                                    <span class="stat">Technical Deep Dives</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="youtube-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/VByruN_Cs8o?list=PLV9VnT1svgQT2ZNJgjh8EpQ4Rnu3oqb9j" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <div class="video-info">
+                                <h3>Text2Mesh Series</h3>
+                                <p>Exploring text-to-3D mesh generation and neural surface reconstruction</p>
+                                <div class="video-stats">
+                                    <span class="stat">Series</span>
+                                    <span class="stat">3D AI</span>
+                                    <span class="stat">Text2Mesh</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="youtube-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/7ebJaFkacrg?list=PLV9VnT1svgQR1FbcWAxJNnuIeVOL0gVYN" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <div class="video-info">
+                                <h3>DeepFace</h3>
+                                <p>Deep learning approaches to facial recognition and computer vision</p>
+                                <div class="video-stats">
+                                    <span class="stat">CV Series</span>
+                                    <span class="stat">DeepFace</span>
+                                    <span class="stat">Computer Vision</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="youtube-card">
+                            <div class="video-thumbnail">
+                                <iframe src="https://www.youtube.com/embed/br2xONoH41w?list=PLV9VnT1svgQQooy1h9A8yXHhc8ZwYGHoy" frameborder="0" allowfullscreen></iframe>
+                            </div>
+                            <div class="video-info">
+                                <h3>Machine Learning Insights</h3>
+                                <p>Advanced ML techniques and research findings from industry experience</p>
+                                <div class="video-stats">
+                                    <span class="stat">ML Education</span>
+                                    <span class="stat">Research</span>
+                                    <span class="stat">Industry</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="platform-links">
+                        <a href="https://www.youtube.com/@yourusername" target="_blank" class="platform-link youtube">
+                            <div class="platform-icon">📺</div>
+                            <div class="platform-info">
+                                <h4>YouTube Channel</h4>
+                                <p>Subscribe for weekly AI content</p>
+                            </div>
+                        </a>
+                        
+                        <a href="https://open.spotify.com/show/yourshowid" target="_blank" class="platform-link spotify">
+                            <div class="platform-icon">🎵</div>
+                            <div class="platform-info">
+                                <h4>Spotify Podcast</h4>
+                                <p>Listen to audio episodes</p>
+                            </div>
+                        </a>
+                        
+                        <a href="https://podcasts.apple.com/us/podcast/yourpodcast" target="_blank" class="platform-link apple">
+                            <div class="platform-icon">🍎</div>
+                            <div class="platform-info">
+                                <h4>Apple Podcasts</h4>
+                                <p>Premium quality audio</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <!-- Projects Section -->
         <section id="projects" class="projects">
@@ -623,62 +833,6 @@
 
 
 
-                    <!-- 3D Video Web Showcase Card -->
-                    <div class="floating-glass-card video-3d-showcase-card">
-                        <div class="card-glow-effect"></div>
-                        <div class="glass-content">
-                            <div class="video-3d-header">
-                                <div class="showcase-icon">🌐</div>
-                                <h3>3D Video Showcase</h3>
-                                <p>Interactive web of connected screens</p>
-                            </div>
-                            <div class="video-3d-container" id="video-3d-scene">
-                                <!-- Three.js 3D scene will be inserted here -->
-                            </div>
-                            <div class="video-3d-controls">
-                                <button class="glass-btn" data-action="rotate-web">
-                                    <span class="btn-icon">🔄</span>
-                                    <span class="btn-text">Rotate Web</span>
-                                </button>
-                                <button class="glass-btn" data-action="zoom-web">
-                                    <span class="btn-icon">🔍</span>
-                                    <span class="btn-text">Zoom</span>
-                                </button>
-                                <button class="glass-btn" data-action="play-all">
-                                    <span class="btn-icon">▶️</span>
-                                    <span class="btn-text">Play All</span>
-                                </button>
-                                <button class="glass-btn" data-action="reset-web">
-                                    <span class="btn-icon">↻</span>
-                                    <span class="btn-text">Reset</span>
-                                </button>
-                            </div>
-                            <div class="video-info-display">
-                                <div class="video-info-item active" data-video="urban_scanning">
-                                    <div class="info-icon">🌆</div>
-                                    <div class="info-content">
-                                        <h4>Urban Drone Survey</h4>
-                                        <p>Advanced aerial photogrammetry capturing urban environments with precision mapping</p>
-                                    </div>
-                                </div>
-                                <div class="video-info-item" data-video="point_cloud_generation">
-                                    <div class="info-icon">📊</div>
-                                    <div class="info-content">
-                                        <h4>Point Cloud Generation</h4>
-                                        <p>Real-time 3D point cloud processing from drone footage using advanced algorithms</p>
-                                    </div>
-                                </div>
-                                <div class="video-info-item" data-video="nerf_demo">
-                                    <div class="info-icon">🎬</div>
-                                    <div class="info-content">
-                                        <h4>Scanning Process Demo</h4>
-                                        <p>Complete workflow demonstration of neural radiance field reconstruction</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
@@ -752,6 +906,10 @@
     </footer>
 
     <!-- Scripts -->
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
     <script src="script.js"></script>
+    <script src="premium-featured.js"></script>
 </body>
 </html> 
