@@ -5488,3 +5488,209 @@ body.keyboard-navigation *:focus {
     min-height: 500px;
     overflow: hidden;
 }
+
+/* Research bio page */
+.skip-link {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    z-index: 2000;
+    padding: 0.5rem 1rem;
+    background: var(--primary-color);
+    color: #fff;
+    border-radius: 0.5rem;
+    text-decoration: none;
+}
+
+.skip-link:focus {
+    top: 1rem;
+}
+
+body.bio-page {
+    background: radial-gradient(ellipse at center, #0f0f23 0%, #050505 70%, #000000 100%);
+    min-height: 100vh;
+}
+
+.nav-brand .brand-home {
+    color: inherit;
+    text-decoration: none;
+    background: inherit;
+    -webkit-background-clip: inherit;
+    background-clip: inherit;
+    -webkit-text-fill-color: inherit;
+}
+
+.nav-toggle {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.bio-main {
+    padding-top: 2rem;
+}
+
+.bio-article {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 8rem 0 4rem;
+}
+
+.bio-header {
+    margin-bottom: 3.5rem;
+}
+
+.bio-kicker {
+    font-family: var(--font-primary);
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-color);
+    margin-bottom: 0.75rem;
+}
+
+.bio-title {
+    font-family: var(--font-primary);
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 0.75rem;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bio-aka,
+.bio-location {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-bottom: 0.35rem;
+}
+
+.bio-section {
+    margin-bottom: 3rem;
+}
+
+.bio-section h2 {
+    font-family: var(--font-primary);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+
+.bio-section h3 {
+    font-family: var(--font-primary);
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 0.4rem;
+}
+
+.bio-section p,
+.bio-list p {
+    color: var(--text-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.8;
+    margin-bottom: 1rem;
+}
+
+.bio-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.bio-list > li,
+.publication {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5rem 1.75rem;
+}
+
+.publication-list {
+    list-style: none;
+    counter-reset: pub;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.25rem;
+}
+
+.publication {
+    counter-increment: pub;
+    position: relative;
+}
+
+.publication-citation {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+}
+
+.publication-citation cite {
+    font-style: italic;
+    color: var(--text-primary);
+}
+
+.doi-link {
+    color: var(--accent-color);
+    word-break: break-word;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.35);
+    transition: var(--transition-fast);
+}
+
+.doi-link:hover,
+.bio-section a:hover {
+    color: #67e8f9;
+    border-bottom-color: #67e8f9;
+}
+
+.bio-section a:not(.btn):not(.doi-link) {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.bio-end-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.about-text a {
+    color: var(--accent-color);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(6, 182, 212, 0.35);
+}
+
+.about-text a:hover {
+    color: #67e8f9;
+    border-bottom-color: #67e8f9;
+}
+
+@media (max-width: 768px) {
+    .bio-article {
+        padding: 7rem 0 3rem;
+    }
+
+    .bio-list > li,
+    .publication {
+        padding: 1.25rem 1.15rem;
+    }
+
+    .bio-end-nav {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    body.bio-page .nav-menu {
+        background: #0a0a0a;
+        z-index: 1001;
+    }
+}
