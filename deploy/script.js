@@ -685,8 +685,11 @@ class Navigation {
         // Enhanced smooth scrolling with easing
         this.navLinks.forEach(link => {
             link.addEventListener('click', (e) => {
-                e.preventDefault();
                 const targetId = link.getAttribute('href');
+                if (!targetId || !targetId.startsWith('#') || targetId === '#') {
+                    return;
+                }
+                e.preventDefault();
                 const targetElement = document.querySelector(targetId);
                 
                 if (targetElement) {
